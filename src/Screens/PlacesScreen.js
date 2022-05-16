@@ -5,7 +5,6 @@ import GeolocationSvc from '../Services/GeolocationSvc';
 import {AppContext} from '../Providers/AppProvider';
 import {calculateDistance} from '../Utiles';
 import FloatingMapIcon from '../Components/FloatingMapIcon';
-import PushNotification from "react-native-push-notification";
 import ReactNativeForegroundService from '@supersami/rn-foreground-service';
 import { AppRegistry } from 'react-native';
 import App from '../../App';
