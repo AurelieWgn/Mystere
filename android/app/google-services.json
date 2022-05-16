@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1022856285463",
+    "project_id": "mystere-1190b",
+    "storage_bucket": "mystere-1190b.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1022856285463:android:1b7bfe647fa06c1e4d7b52",
+        "android_client_info": {
+          "package_name": "com.mystere"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1022856285463-v1ffb7ig4j38ja7sm30er2faisdh8t8f.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA5RLxekfQgW3sYdf70zpiokgyHY9miYH4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1022856285463-v1ffb7ig4j38ja7sm30er2faisdh8t8f.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
