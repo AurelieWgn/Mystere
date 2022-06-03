@@ -3,12 +3,15 @@ import { Text, View, ImageBackground, StyleSheet, FlatList, Image, TouchableOpac
 import { useNavigation } from '@react-navigation/native';
 import GeolocationSvc from '../Services/GeolocationSvc';
 import {AppContext} from '../Providers/AppProvider';
-import {calculateDistance} from '../Utiles';
+import {calculateDistance, getPlacesBetween} from '../Utiles';
 import FloatingMapIcon from '../Components/FloatingMapIcon';
 import ReactNativeForegroundService from '@supersami/rn-foreground-service';
 import { AppRegistry } from 'react-native';
 import App from '../../App';
 import RNLocation from 'react-native-location';
+import Slider from '@react-native-community/slider';
+import {PlaceItem} from '../Components/PlaceItem';
+
 ReactNativeForegroundService.register();
 AppRegistry.registerComponent('Mystere', () => App);
 
@@ -33,8 +36,6 @@ RNLocation.configure({
 });
 let locationSubscription = null;
 let locationTimeout = null;
-
-console.log('start')
 
 
 // ReactNativeForegroundService.add_task(
@@ -87,52 +88,17 @@ ReactNativeForegroundService.start({
 });
 
 
-const PlaceItem = ({data}) =>{
-    const [state, dispatch] = useContext(AppContext);
-    const [distance, setDistance] = useState(null);
-    const navigation = useNavigation();
-
-    const onPress = (id) => {
-        navigation.navigate('SinglePlaceScreen', {placeId: id});
-    }
-    
-    useEffect(()=>{
-        if(state.userLocation){
-            const distance = calculateDistance(state.userLocation, data.coords);
-            setDistance(distance);
-        }  
-    }, [state.userLocation])
-
-    return (
-        <TouchableOpacity
-            style={styles.button}
-            onPress={()=>onPress(data.id)}
-        >
-            <View style={{height: 120, marginBottom:10, display:'flex', flexDirection:'row'}}> 
-                    <View style={{width:'50%', position:'relative', marginBottom:10, marginRight:5 }}>
-                        <View >
-                            <Image source={require(`../Img/Places/Versailles.jpg`)}  style={{maxWidth:'100%', height:120,  resizeMode: 'cover' }}/>
-                        </View>
-                        <Text style={{color: '#FFF', fontWeight:'bold', fontSize:12, padding:5, position:'absolute', bottom:0, right:0}}>{distance}Km</Text>
-                    </View>
-            
-                    <View style={{width:'50%', height:100, textOverflow: 'ellipsis', padding:5 }}>
-                        <Text style={{color: '#FFF', fontWeight:'bold', fontSize:16, textAlign:'center'}}>{data.name}</Text>
-                        <Text style={{color:'#FFF', fontWeight:'600', fontSize:12 }}>{data.description}</Text>
-                    </View>   
-            </View>
-        </TouchableOpacity>
-    )
-}
 
 const MainListe = () =>{
     const [state, dispatch] = useContext(AppContext);
     const [locationPermission, setLocationPermission] = useState(false);
+    const [placesBetween, setPlacesBetween] = useState([]);
     const locationSvc = new GeolocationSvc();
+    const [maxDistanceValue, setMaxDistanceValue] = useState(50);
 
-    const getLocationPermition = async()=>{
-        locationSvc.askForGeolocationPermission().then((resp)=> setLocationPermission(resp));
-    }
+    // const getLocationPermition = async()=>{
+    //     locationSvc.askForGeolocationPermission().then((resp)=> setLocationPermission(resp));
+    // }
 
     const initLocation = async() =>{
         console.log("init ?")
@@ -146,42 +112,94 @@ const MainListe = () =>{
         }
       
     }
+    
+    useEffect(()=>{
+        // getLocationPermition();
+         setMaxDistanceValue(50);
+        createChannels();
+       
+    }, [])
+
+    useEffect(()=>{
+        const placesBetween = getPlacesBetween(state.userLocation, state.places, maxDistanceValue);
+        setPlacesBetween(placesBetween);
+    }, [])
 
     const createChannels = () => {
-        PushNotification.createChannel(
-            {
-                channelId: "mystere_app",
-                channelName: "mystere_app"
-            }
-        )
+        // PushNotification.createChannel(
+        //     {
+        //         channelId: "mystere_app",
+        //         channelName: "mystere_app"
+        //     }
+        // )
     }
 
 
-    useEffect(()=>{
-        getLocationPermition();
-        createChannels();
-
-    }, [])
+   
 
        
-    useEffect(()=>{
-        console.log("locationPermission", locationPermission)
-        if(locationPermission)
-            initLocation()
-    },[locationPermission])
+    // useEffect(()=>{
+    //     console.log("locationPermission", locationPermission)
+    //     if(locationPermission)
+    //         initLocation()
+    // },[locationPermission])
+
+    const onChangeSliderDistance = (newDistance) => {
+        console.log('new', state.userLocation, state.places, Math.round(newDistance))
+        setMaxDistanceValue(Math.round(newDistance))
+        if(newDistance === 500){
+            setPlacesBetween(state.places)
+        }
+        else{
+            const placesBetween = getPlacesBetween(state.userLocation, state.places, Math.round(newDistance));
+            console.log('placesBetween', placesBetween)
+            setPlacesBetween(placesBetween)
+        }
+       
+
+    }
 
     
     return (
         <View style={styles.container}>
-            <FlatList
-                data={state.places}
-                renderItem={({item}) => <PlaceItem data={item}/> }
-                keyExtractor={(item, id) => id}
-            />
+            {
+                !state.userLocation &&
+                    <Text style={styles.title}>Activez vote position pour accéder aux lieux les plus proches de vous.</Text>
+            }
+           
+            <View style={styles.sliderContainer}>
+                <Slider
+                    style={{width: '100%', height: 40, color:'#FFF'}}
+                    minimumValue={1}
+                    maximumValue={+500}
+                    minimumTrackTintColor="#53e1ca"
+                    maximumTrackTintColor="#FFF"
+                    thumbTintColor="#53e1ca"
+                    value={maxDistanceValue}
+                    onValueChange={onChangeSliderDistance}
+                    />
+                <Text style={styles.distanceText}>Lieux à {maxDistanceValue === 500 ? "plus" : 'moins'} de {maxDistanceValue} Kms</Text>
+            </View>
+            {
+                placesBetween.length<1 &&
+                    <Text style={styles.title}>Il n'y à pas de lieux à moins de {maxDistanceValue}km.</Text>
+            }
+            {
+                placesBetween.length>0 &&
+                <>
+                    
+                    <FlatList
+                        data={placesBetween}
+                        renderItem={({item}) => <PlaceItem data={item}/> }
+                        keyExtractor={(item, id) => id}
+                        // ListHeaderComponent={()=>   }
+                    />
+                </>
+                        
+            }
             <View style={{position:'absolute', bottom:20, right:20}}>
                 <FloatingMapIcon/>
             </View>
-          
         </View>
     )
 
@@ -193,6 +211,25 @@ const styles = StyleSheet.create({
      backgroundColor : '#000',
      padding:5
     },
+     title:{
+        textTransform: 'uppercase',
+        fontSize: 24,
+        fontWeight: '800',
+        color: '#FFF',
+        textAlign: 'center',
+        padding:20
+    },
+    distanceText:{
+         fontSize: 16,
+        fontWeight: '800',
+        color: '#FFF',
+        textAlign: 'center',
+        // padding:10
+    },
+    sliderContainer:{
+        marginTop: 20,
+        marginBottom: 40,
+    }
 })
 
 export default MainListe

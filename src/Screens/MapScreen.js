@@ -6,13 +6,6 @@ import MAPPING from '../RegionsMap';
 
 const imageSource = require('../Img/Map/Group.png');
 
-const styles = StyleSheet.create({
-  myCustomStyle: {
-    width: '100%',
-    padding: 10,
-    marginTop: '16%',
-  },
-});
 
 const MapScreen = () => {
   const navigation = useNavigation();
@@ -23,9 +16,10 @@ const MapScreen = () => {
 
   return (
     <View style={{position: 'relative'}}>
+      <Text style={styles.title}>Sélectionnez une région</Text>
       <ImageMapper
-        imgHeight={500}
-        imgWidth={'100%'}
+        imgHeight={400}
+        imgWidth={'99%'}
         imgSource={imageSource}
         imgMap={MAPPING}
         onPress={id => onPressRegion(id)}
@@ -35,5 +29,26 @@ const MapScreen = () => {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+    container: {
+     flex: 1,
+     backgroundColor : '#000',
+     padding:5
+    },
+     title:{
+        textTransform: 'uppercase',
+        fontSize: 24,
+        fontWeight: '800',
+        color: '#000',
+        textAlign: 'center',
+        padding:20
+    },
+     myCustomStyle: {
+    width: '100%',
+    padding: 10,
+    marginTop: '16%',
+  },
+})
 
 export default MapScreen;

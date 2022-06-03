@@ -13,7 +13,7 @@ import {
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import MainListe from './src/Screens/ListeScreen';
+import HomeScreen from './src/Screens/HomeScreen';
 import SplashScreen from './src/Screens/SplashScreen';
 import MenuScreen from './src/Screens/MenuScreen';
 import PlacesScreen from './src/Screens/PlacesScreen';
@@ -42,7 +42,7 @@ const MainTabNavigation = () => {
     <Tab.Navigator initialRouteName="SplashScreen">
       <Tab.Screen
         name="Home"
-        component={MainListe}
+        component={HomeScreen}
         options={{
           headerShown: false,
           title: 'Accueil',
@@ -152,6 +152,8 @@ const App = () => {
         // });
   }
 
+   
+
   const emptyNotifiedPlacesFormAsyncStorage = async()=>{
     console.log("new Date()", typeof new Date())
     try {
@@ -179,22 +181,6 @@ const App = () => {
       emptyNotifiedPlacesFormAsyncStorage()
   })
 
-  //To DO to use
-  // useEffect(() => {
-  //       async function loadPosts() {
-  //           const response = await fetch('https://xn--mystre-6ua.fr/wp/wp-json/places/all');
-  //           if(!response.ok) {
-  //               // oups! something went wrong
-  //               return;
-  //           }
-  //           const places = await response.json();
-  //           dispatch({type: "INIT_ALL_PLACES", places: places })
-  //       }
-  //       loadPosts()
-       
-  //   }, [])
-
-
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="SplashScreen">
@@ -216,6 +202,11 @@ const App = () => {
         <Stack.Screen
           name="FilteredListeScreen"
           component={FilteredListeScreen}
+          options={{headerShown: true, title: ''}}
+        />
+        <Stack.Screen
+          name="mapScreen"
+          component={MapScreen}
           options={{headerShown: true, title: ''}}
         />
       </Stack.Navigator>

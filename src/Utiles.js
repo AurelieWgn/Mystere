@@ -1,4 +1,4 @@
-import {getDistance} from 'geolib';
+import {getDistance, orderByDistance} from 'geolib';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // from / to : {"longitude": 0.674445, "latitude": 46.338843}
@@ -50,4 +50,35 @@ const updateNotifiedPlaces = async (value) =>{
 }
 
 
-export {calculateDistance, storePlacesData,  getPlacesData, getNotifiedPlaces, updateNotifiedPlaces}
+const getRandomItem = (arr) => {
+
+    const randomIndex = Math.floor(Math.random() * arr.length);
+    const item = arr[randomIndex];
+
+    return item;
+}
+
+//Get places <50km form position
+const getNearestPlaces = (position, places) => {
+  const orderedPlaces = orderByDistance(position, places);
+  orderedPlaces.slice(0, 10)
+  const placesLessThen50 = orderedPlaces.filter((places)=> calculateDistance(position, places.coords) <= 50)
+  return placesLessThen50;
+}
+
+const getPlacesBetween = (position, places, distance) => {
+  const placesBewteen = places.filter((places)=> calculateDistance(position, places.coords) <= distance);
+  return placesBewteen;
+}
+
+
+export { 
+  calculateDistance, 
+  storePlacesData,  
+  getPlacesData, 
+  getNotifiedPlaces, 
+  updateNotifiedPlaces, 
+  getRandomItem, 
+  getNearestPlaces, 
+  getPlacesBetween
+}
