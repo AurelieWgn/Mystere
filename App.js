@@ -13,14 +13,18 @@ import {
 
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import HomeScreen from './src/Screens/HomeScreen';
-import SplashScreen from './src/Screens/SplashScreen';
-import MenuScreen from './src/Screens/MenuScreen';
-import PlacesScreen from './src/Screens/PlacesScreen';
-import SearchScreen from './src/Screens/SearchScreen';
-import SinglePlaceScreen from './src/Screens/SinglePlaceScreen';
-import FilteredListeScreen from './src/Screens/FilteredListeScreen';
-import MapScreen from './src/Screens/MapScreen';
+import {HomeScreen} from './src/Screens/HomeScreen';
+import {SplashScreen} from './src/Screens/SplashScreen';
+import {MenuScreen} from './src/Screens/MenuScreen';
+import {PlacesScreen} from './src/Screens/PlacesScreen';
+import {SearchScreen} from './src/Screens/SearchScreen';
+import {SinglePlaceScreen} from './src/Screens/SinglePlaceScreen';
+import {FilteredListeScreen} from './src/Screens/FilteredListeScreen';
+import {MapScreen} from './src/Screens/MapScreen';
+import {MentionsScreen} from './src/Screens/MentionsScreen';
+import {HelpScreen} from './src/Screens/HelpScreen';
+import {MajScreen} from './src/Screens/MajScreen';
+import {ContactScreen} from './src/Screens/ContactScreen';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import 'react-native-gesture-handler';
@@ -29,12 +33,9 @@ import useTracking from "./src/Services/Hooks/useTracking";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 
-
-
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const Drawer = createDrawerNavigator();
-
 
 // Bottom tab bar will be displayed on :
 const MainTabNavigation = () => {
@@ -84,7 +85,7 @@ const MainTabNavigation = () => {
       />
       <Tab.Screen
         name="Menu"
-        component={MapScreen}
+        component={MenuScreen}
         options={{
           headerShown: false,
           title: 'Menu',
@@ -208,6 +209,26 @@ const App = () => {
           name="mapScreen"
           component={MapScreen}
           options={{headerShown: true, title: ''}}
+        />
+        <Stack.Screen
+          name="mentionsScreen"
+          component={MentionsScreen}
+          options={{headerShown: true, title: 'Mentions légales'}}
+        />
+        <Stack.Screen
+          name="contactScreen"
+          component={ContactScreen}
+          options={{headerShown: true, title: 'Contact'}}
+        />
+        <Stack.Screen
+          name="majScreen"
+          component={MajScreen}
+          options={{headerShown: true, title: 'Mises à jour'}}
+        />
+        <Stack.Screen
+          name="helpScreen"
+          component={HelpScreen}
+          options={{headerShown: true, title: 'Besoin d\'aide ?'}}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -1,52 +1,14 @@
 
 import React, { useEffect, useContext, useState } from 'react';
-import { Text, View, ImageBackground, StyleSheet, FlatList, Image, TouchableOpacity, Switch } from 'react-native';
+import { Text, View, StyleSheet, FlatList} from 'react-native';
 import GeolocationSvc from '../Services/GeolocationSvc';
 import Geolocation from 'react-native-geolocation-service';
 import {AppContext} from '../Providers/AppProvider';
-import {calculateDistance, getRandomItem} from '../Utiles';
-import { useNavigation } from '@react-navigation/native';
-import SearchBar from '../Components/SearchBar';
+import { getRandomItem} from '../Utiles';
+import {PlaceItemFullWidth} from '../Components/PlaceItemFullWidth'
 
 
-
-const PlaceItem = ({data}) =>{
-    const [state, dispatch] = useContext(AppContext);
-    const [distance, setDistance] = useState(null);
-    const navigation = useNavigation();
-
-    const onPress = (id) => {
-    //    NativeModules.BackgroundWorkManager.startBackgroundWork();
-        navigation.navigate('SinglePlaceScreen', {placeId: id});
-    }
-    
-    useEffect(()=>{
-        if(state.userLocation){
-            const distance = calculateDistance(state.userLocation, data.coords);
-            setDistance(distance)
-        }
-            
-    }, [state.userLocation])
-    const Image_Http_URL ={ uri: `https://xn--mystre-6ua.fr/wp/wp-content/uploads/${data.img}`};    
-    return (
-        <TouchableOpacity
-            style={styles.button}
-            onPress={()=>onPress(data.id)}
-        >
-            <View style={{height: 200, marginBottom:10}}> 
-                <ImageBackground source={Image_Http_URL} resizeMode="cover" style={{flex:1}}>
-                    <Text style={{color: '#FFF', fontWeight:'bold', fontSize:18, textAlign:'right', padding:5}}>{distance}Km</Text>
-                    <View style={{ width:'100%', position:'absolute', bottom:0, padding:10}}>
-                        <Text style={{color: '#FFF', fontWeight:'bold', fontSize:20}}>{data.name}</Text>
-                        <Text style={{color:'#FFF', fontWeight:'800', fontSize:16}}><Image source={require('../Img/Places/red_place.png')} style={{width:24, height:24}}/>{data.addres}</Text>
-                    </View>
-                </ImageBackground>
-            </View>
-        </TouchableOpacity>
-    )
-}
-
-const HomeScreen = () =>{
+export const HomeScreen = () =>{
     const [state, dispatch] = useContext(AppContext);
     const [locationPermission, setLocationPermission] = useState(false);
     const [randomPlaces, setRandom] = useState([]);
@@ -153,7 +115,7 @@ const HomeScreen = () =>{
                     <FlatList
                      ListHeaderComponent={()=>   <Text style={styles.title}>Lieux à découvrir ou redécouvrir</Text>}
                         data={randomPlaces}
-                        renderItem={({item}) => <PlaceItem data={item}/> }
+                        renderItem={({item}) => <PlaceItemFullWidth data={item}/> }
                         keyExtractor={(item, id) => id}
                     />
             }
@@ -177,4 +139,3 @@ const styles = StyleSheet.create({
     }
   })
 
-export default HomeScreen

@@ -89,7 +89,7 @@ ReactNativeForegroundService.start({
 
 
 
-const MainListe = () =>{
+export const PlacesScreen = () =>{
     const [state, dispatch] = useContext(AppContext);
     const [locationPermission, setLocationPermission] = useState(false);
     const [placesBetween, setPlacesBetween] = useState([]);
@@ -135,8 +135,6 @@ const MainListe = () =>{
     }
 
 
-   
-
        
     // useEffect(()=>{
     //     console.log("locationPermission", locationPermission)
@@ -170,7 +168,7 @@ const MainListe = () =>{
             <View style={styles.sliderContainer}>
                 <Slider
                     style={{width: '100%', height: 40, color:'#FFF'}}
-                    minimumValue={1}
+                    minimumValue={10}
                     maximumValue={+500}
                     minimumTrackTintColor="#53e1ca"
                     maximumTrackTintColor="#FFF"
@@ -231,5 +229,3 @@ const styles = StyleSheet.create({
         marginBottom: 40,
     }
 })
-
-export default MainListe

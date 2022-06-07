@@ -2,7 +2,7 @@ import React, { useEffect, useContext, useState } from 'react';
 import { Text, View, ImageBackground, StyleSheet, FlatList, Image, TouchableOpacity, Button, Linking } from 'react-native';
 import {AppContext} from '../Providers/AppProvider';
 
-const SinglePlaceScreen = ({route}) =>{
+export const SinglePlaceScreen = ({route}) =>{
     const [state, dispatch] = useContext(AppContext);
     const { placeId  } = route.params;
     const [place, setPlace] = useState({});
@@ -48,5 +48,3 @@ const styles = StyleSheet.create({
     },
   })
 
-
-export default SinglePlaceScreen

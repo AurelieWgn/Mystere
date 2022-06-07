@@ -7,7 +7,7 @@ import MAPPING from '../RegionsMap';
 const imageSource = require('../Img/Map/Group.png');
 
 
-const MapScreen = () => {
+export const MapScreen = () => {
   const navigation = useNavigation();
 
   const onPressRegion = id => {
@@ -51,4 +51,3 @@ const styles = StyleSheet.create({
   },
 })
 
-export default MapScreen;

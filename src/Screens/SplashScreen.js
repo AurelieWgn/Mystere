@@ -29,7 +29,7 @@ const styles = StyleSheet.create({
 });
 
 
-const SplashScreen = () => {
+export const SplashScreen = () => {
   const navigation = useNavigation();
   const [state, dispatch] = useContext(AppContext);
 
@@ -70,4 +70,3 @@ const SplashScreen = () => {
   );
 };
 
-export default SplashScreen;

@@ -9,7 +9,7 @@ import Geolocation from 'react-native-geolocation-service';
 import {PlaceItem} from '../Components/PlaceItem';
 
 
-const FilteredListeScreen = ({route}) =>{
+export const FilteredListeScreen = ({route}) =>{
     const [state, dispatch] = useContext(AppContext);
     const [locationPermission, setLocationPermission] = useState(false);
     const locationSvc = new GeolocationSvc();
@@ -117,4 +117,3 @@ const styles = StyleSheet.create({
     },
   })
 
-export default FilteredListeScreen

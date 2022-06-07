@@ -5,7 +5,7 @@ import {calculateDistance} from '../Utiles';
 import {PlaceItem} from '../Components/PlaceItem';
 import {AppContext} from '../Providers/AppProvider';
 
-const Search = () =>{
+export const SearchScreen = () =>{
     const [state, dispatch] = useContext(AppContext);
     const [filteredPlaces, setFilteredPlaces] = useState(state.places);
     const [clicked, setClicked] = useState(false);
@@ -87,6 +87,3 @@ const styles = StyleSheet.create({
         marginBottom: 40,
     }
 })
-
-
-export default Search
