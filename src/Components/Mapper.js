@@ -52,7 +52,7 @@ class ImageMapper extends Component {
           {imgMap.map((item, index) => (
             <TouchableOpacity
               key={item.name}
-              onPress={event => this.props.onPress(item.id)}
+              onPress={event => this.props.onPress(item.id, item.name)}
               style={[{position: 'absolute'}, this.buildStyle(item, index)]}
             />
           ))}

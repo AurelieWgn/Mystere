@@ -4,14 +4,13 @@ import {AppContext} from '../Providers/AppProvider';
 import {calculateDistance} from '../Utiles';
 import { useNavigation } from '@react-navigation/native';
 
-export const PlaceItemFullWidth = ({data}) =>{
+export const PlaceItemFullWidth = ({data, name}) =>{
     const [state, dispatch] = useContext(AppContext);
     const [distance, setDistance] = useState(null);
     const navigation = useNavigation();
 
-    const onPress = (id) => {
-    //    NativeModules.BackgroundWorkManager.startBackgroundWork();
-        navigation.navigate('SinglePlaceScreen', {placeId: id});
+    const onPress = (id, name) => {
+        navigation.navigate('SinglePlaceScreen', { name: name, placeId: id })
     }
     
     useEffect(()=>{
@@ -24,7 +23,7 @@ export const PlaceItemFullWidth = ({data}) =>{
     const Image_Http_URL ={ uri: `https://xn--mystre-6ua.fr/wp/wp-content/uploads/${data.img}`};    
     return (
         <TouchableOpacity
-            onPress={()=>onPress(data.id)}
+            onPress={()=>onPress(data.id, data.name)}
         >
             <View style={{height: 200, marginBottom:10}}> 
                 <ImageBackground source={Image_Http_URL} resizeMode="cover" style={{flex:1}}>

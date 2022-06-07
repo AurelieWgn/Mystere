@@ -1,16 +1,5 @@
 import React, {useEffect} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-  Image,
-  FlatList,
-} from 'react-native';
-
+import { StyleSheet, Image } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {HomeScreen} from './src/Screens/HomeScreen';
@@ -28,7 +17,6 @@ import {ContactScreen} from './src/Screens/ContactScreen';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import 'react-native-gesture-handler';
-import {useNavigation} from '@react-navigation/native';
 import useTracking from "./src/Services/Hooks/useTracking";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
@@ -40,7 +28,14 @@ const Drawer = createDrawerNavigator();
 // Bottom tab bar will be displayed on :
 const MainTabNavigation = () => {
   return (
-    <Tab.Navigator initialRouteName="SplashScreen">
+    <Tab.Navigator 
+      initialRouteName="SplashScreen"
+      screenOptions= {({  }) => ({
+          tabBarActiveTintColor: '#53e1ca',
+          tabBarInactiveTintColor: '#000',
+        })}
+
+    >
       <Tab.Screen
         name="Home"
         component={HomeScreen}
@@ -96,30 +91,10 @@ const MainTabNavigation = () => {
             />
           ),
         }}
-        // listeners={({ navigation }) => ({
-        //   tabPress: e => {
-        //     e.preventDefault();
-        //     // navigation.openDrawer();
-        //   }
-        // })}
       />
     </Tab.Navigator>
   );
 };
-
-//Drawer
-const DrawerNavigation = () => {
-  return (
-    <Drawer.Navigator detachInactiveScreens={true}>
-      <Drawer.Screen name="Mention" component={MenuScreen} />
-      <Drawer.Screen name="Carte de France" component={MenuScreen} />
-      <Drawer.Screen name="Contact" component={MenuScreen} />
-      <Drawer.Screen name="Mise à jour" component={MenuScreen} />
-    </Drawer.Navigator>
-  );
-};
-
-
 
 const App = () => {
   const {location} = useTracking(true);
@@ -153,8 +128,7 @@ const App = () => {
         // });
   }
 
-   
-
+  
   const emptyNotifiedPlacesFormAsyncStorage = async()=>{
     console.log("new Date()", typeof new Date())
     try {
@@ -198,17 +172,17 @@ const App = () => {
         <Stack.Screen
           name="SinglePlaceScreen"
           component={SinglePlaceScreen}
-          options={{headerShown: true, title: 'Lieux'}}
+          options={({ route }) => ({headerShown: true, title: route.params.name })}
         />
         <Stack.Screen
           name="FilteredListeScreen"
           component={FilteredListeScreen}
-          options={{headerShown: true, title: ''}}
+          options={({ route }) => ({headerShown: true, title: route.params.regionLabel})}
         />
         <Stack.Screen
           name="mapScreen"
           component={MapScreen}
-          options={{headerShown: true, title: ''}}
+          options={{headerShown: true, title: 'Carte de France'}}
         />
         <Stack.Screen
           name="mentionsScreen"

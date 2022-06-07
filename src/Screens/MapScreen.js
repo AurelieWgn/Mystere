@@ -10,8 +10,8 @@ const imageSource = require('../Img/Map/Group.png');
 export const MapScreen = () => {
   const navigation = useNavigation();
 
-  const onPressRegion = id => {
-    navigation.navigate('FilteredListeScreen', {regionId: id});
+  const onPressRegion = (id, label) => {
+    navigation.navigate('FilteredListeScreen', {regionId: id, regionLabel: label});
   };
 
   return (
@@ -22,7 +22,7 @@ export const MapScreen = () => {
         imgWidth={'99%'}
         imgSource={imageSource}
         imgMap={MAPPING}
-        onPress={id => onPressRegion(id)}
+        onPress={(id, label) => onPressRegion(id, label)}
         containerStyle={styles.myCustomStyle}
         selectedAreaId="my_area_id"
       />
