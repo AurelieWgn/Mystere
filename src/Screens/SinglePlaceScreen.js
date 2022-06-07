@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, Image, Button, Linking } from 'react-native';
 import { ScrollView } from 'react-native-gesture-handler';
 import {AppContext} from '../Providers/AppProvider';
 import {calculateDistance} from '../Utiles';
+import {URL_WP_IMG} from '../env';
 
 export const SinglePlaceScreen = ({route}) =>{
     const [state, dispatch] = useContext(AppContext);
@@ -13,7 +14,7 @@ export const SinglePlaceScreen = ({route}) =>{
      
     useEffect(()=>{
         const selectedPlace = state.places.filter(place=>place.id === placeId)[0];
-        const Image_url = { uri: `https://xn--mystre-6ua.fr/wp/wp-content/uploads/${selectedPlace.img}`};
+        const Image_url = { uri: `${URL_WP_IMG}${selectedPlace.img}`};
         setImage_Http_URL(Image_url)
         setPlace(selectedPlace);
         if(state.userLocation){

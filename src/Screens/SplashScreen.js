@@ -5,6 +5,7 @@ import {StyleSheet} from 'react-native';
 import {ProgressBar} from '@react-native-community/progress-bar-android';
 import {AppContext} from '../Providers/AppProvider';
 import {storePlacesData} from '../Utiles';
+import {API_URL_ALL_PLACES} from '../env';
 
 const styles = StyleSheet.create({
   container: {
@@ -28,7 +29,6 @@ const styles = StyleSheet.create({
   },
 });
 
-
 export const SplashScreen = () => {
   const navigation = useNavigation();
   const [state, dispatch] = useContext(AppContext);
@@ -37,9 +37,7 @@ export const SplashScreen = () => {
   useEffect(() => {
     async function loadPosts() {
       try {
-        const response = await fetch(
-          'https://xn--mystre-6ua.fr/wp/wp-json/places/all',
-        );
+        const response = await fetch(API_URL_ALL_PLACES,);
         const places = await response.json();
         dispatch({type: 'INIT_ALL_PLACES', places: places});
         storePlacesData(JSON.stringify(places));

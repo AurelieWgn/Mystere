@@ -3,13 +3,13 @@ import { Text, View, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import {AppContext} from '../Providers/AppProvider';
 import {calculateDistance} from '../Utiles';
-
+import {URL_WP_IMG} from '../env';
 
 export const PlaceItem = ({data}) =>{
     const [state, dispatch] = useContext(AppContext);
     const [distance, setDistance] = useState(null);
     const navigation = useNavigation();
-    const Image_Http_URL ={ uri: `https://xn--mystre-6ua.fr/wp/wp-content/uploads/${data.img}`};
+    const Image_Http_URL ={ uri: `${URL_WP_IMG}${data.img}`};
 
     const onPress = (id, name) => {
         navigation.navigate('SinglePlaceScreen', { name: name, placeId: id })

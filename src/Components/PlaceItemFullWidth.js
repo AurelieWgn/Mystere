@@ -3,6 +3,7 @@ import { Text, View, ImageBackground, Image, TouchableOpacity, StyleSheet } from
 import {AppContext} from '../Providers/AppProvider';
 import {calculateDistance} from '../Utiles';
 import { useNavigation } from '@react-navigation/native';
+import {URL_WP_IMG} from '../env';
 
 export const PlaceItemFullWidth = ({data, name}) =>{
     const [state, dispatch] = useContext(AppContext);
@@ -20,7 +21,7 @@ export const PlaceItemFullWidth = ({data, name}) =>{
         }
             
     }, [state.userLocation])
-    const Image_Http_URL ={ uri: `https://xn--mystre-6ua.fr/wp/wp-content/uploads/${data.img}`};    
+    const Image_Http_URL ={ uri: `${URL_WP_IMG}${data.img}`};    
     return (
         <TouchableOpacity
             onPress={()=>onPress(data.id, data.name)}
