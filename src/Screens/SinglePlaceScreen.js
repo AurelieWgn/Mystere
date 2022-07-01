@@ -1,9 +1,9 @@
 import React, { useEffect, useContext, useState } from 'react';
-import { Text, View, StyleSheet, Image, Button, Linking } from 'react-native';
-import { ScrollView } from 'react-native-gesture-handler';
+import { Text, View, StyleSheet, Image, Button, Linking, ScrollView } from 'react-native';
 import {AppContext} from '../Providers/AppProvider';
 import {calculateDistance} from '../Utiles';
 import {URL_WP_IMG} from '../env';
+import LocationIconWithAddres from '../Components/Icons/LocationIconWithAddres';
 
 export const SinglePlaceScreen = ({route}) =>{
     const [state, dispatch] = useContext(AppContext);
@@ -32,20 +32,20 @@ export const SinglePlaceScreen = ({route}) =>{
     return (
         <View style={styles.container}>
              <View >
-                <Image source={Image_Http_URL}  style={{maxWidth:'100%', height:180,  resizeMode: 'cover' }}/>
-                <Text style={{color: '#FFF', fontWeight:'bold', fontSize:12, padding:5, position:'absolute', bottom:0, right:0}}>{distance}Km</Text>
+                <Image source={Image_Http_URL}  style={styles.placeImg}/>
+                {distance && <Text style={styles.KmText}>{distance}Km</Text>}
             </View>
             <View style={{padding:10}}>
-                <Text style={{color:'#FFF', fontWeight:'800', fontSize:20, textAlign:'center', paddingTop:10}}>{place.name}</Text>
-                <Text style={{color:'red', fontWeight:'800', fontSize:16, paddingBottom:20, paddingTop:10}}><Image source={require('../Img/Places/red_place.png')} style={{width:24, height:24}}/>{place.addres}</Text>
+                <LocationIconWithAddres addres={place.addres}/>
+                <View style={{marginBottom:20}}></View>
                 <Button
                     onPress={()=>onPressShowGoogleMap()}
                     title="Localisation GPS"
-                    color="#841584"
-                    accessibilityLabel="Learn more about this purple button"
+                    color="#773B43"
+                    accessibilityLabel="Localisation GPS"
                 />
                 <ScrollView>
-                    <Text style={{color:'#FFF', fontWeight:'800', fontSize:14, paddingTop:10, textAlign:'justify'}}>{place.description}</Text>
+                    <Text style={styles.descriptionText}>{place.description}</Text>
                 </ScrollView>
             </View>
         </View>
@@ -58,4 +58,39 @@ const styles = StyleSheet.create({
      backgroundColor : '#000',
      paddingTop: 0   
     },
+    KmText : {
+        color: '#FFF', 
+        fontWeight:'bold', 
+        fontSize:14, 
+        padding:5, 
+        position:'absolute', 
+        bottom:0, 
+        right:0
+    },
+    placeImg:{
+        maxWidth:'100%', 
+        height:180,  
+        resizeMode: 'cover'
+    },
+    addresText : {
+        color:'#F3E0E2', 
+        fontWeight:'600', 
+        fontSize:16, 
+        paddingBottom:20, 
+        paddingTop:10,
+        textAlign: 'center'
+    },
+    descriptionText : {
+        color:'#F3E0E2', 
+        fontWeight:'400', 
+        fontSize:14, 
+        paddingTop:10, 
+        textAlign:'justify',
+        lineHeight: 20
+    },
+    titleAddresContainer: {
+        display:'flex',
+        flexDirection: 'row',
+        alignItems:'center'
+    }
   })

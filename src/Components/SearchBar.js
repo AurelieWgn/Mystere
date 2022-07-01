@@ -7,7 +7,7 @@ const SearchBar = ({clicked, searchPhrase, setSearchPhrase, setClicked, resetSea
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Search"
+        placeholder="Rechercher"
         value={searchPhrase}
         onChangeText={setSearchPhrase}
         onFocus={() => {

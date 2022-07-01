@@ -7,17 +7,10 @@ import {AppContext} from '../Providers/AppProvider';
 import { getRandomItem} from '../Utiles';
 import {PlaceItemFullWidth} from '../Components/PlaceItemFullWidth'
 
-
 export const HomeScreen = () =>{
     const [state, dispatch] = useContext(AppContext);
     const [locationPermission, setLocationPermission] = useState(false);
     const [randomPlaces, setRandom] = useState([]);
-    // const [searchPhrase, setSearchPhrase] = useState("");
-    // const [fakeData, setFakeData] = useState();
-
-    // const [clicked, setClicked] = useState(false);
-
-
     const locationSvc = new GeolocationSvc();
 
     const getLocationPermition = async()=>{
@@ -45,68 +38,41 @@ export const HomeScreen = () =>{
           
           } catch (error) {
     
-            console.log("getCurrentLatLong::catcherror =>", error);
+            console.log("HomeScreen getCurrentLatLong::catcherror =>", error);
             return { status: false, message: "[MapSvc] Can not get position" };
       
         };
-        // await locationSvc.getCurrantLocation().then(async(pos)=>{
-        //     console.log("pos Liste", pos)
-        //     dispatch({type: "UPDATE_USER_LOCATION", location: pos})
-        // });
     }
 
-     //ToDO Delete , use it in App at init
-  useEffect(() => {
-      async function loadPosts() {
-          const response = await fetch('https://xn--mystre-6ua.fr/wp/wp-json/places/all');
-          if(!response.ok) {
-              // oups! something went wrong
-              return;
-          }
-          const places = await response.json();
-          dispatch({type: "INIT_ALL_PLACES", places: places })
-      }
-      loadPosts()
-       
-    }, [])
 
     useEffect(()=>{
-         console.log('getLocationPermition')
-        getLocationPermition();
+        if(!locationPermission){
+            getLocationPermition();
+        }
+        if(!state.userLocation){
+            initLocation()
+        }
     }, [])
+    
+
 
   useEffect(()=>{
       const numberOfPlaces = 5;
       let finalPlaceArray = []
       if(state.places){
-          console.log("if(state.places)")
         for(let i = 0; i < numberOfPlaces; i++){
             let item = getRandomItem(state.places);
             finalPlaceArray.push(item);
         }
-
         setRandom([...new Set(finalPlaceArray)])
       } 
       else{
           console.log('pas de lieux ! ')
       } 
   },[state.places])
-   
-    useEffect(()=>{
-        if(locationPermission)
-            initLocation()
-    },[locationPermission])
-
     
     return (
         <View style={styles.container}>
-            {/* <SearchBar
-                searchPhrase={state.places}
-                setSearchPhrase={setSearchPhrase}
-                clicked={clicked}
-                setClicked={setClicked}
-            /> */} 
-    
             <View>
             {
                 !randomPlaces ? 
@@ -133,7 +99,7 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         fontSize: 24,
         fontWeight: '800',
-        color: '#FFF',
+        color: '#F3E0E2',
         textAlign: 'center',
         padding:20
     }

@@ -1,13 +1,10 @@
 
 import React, { useEffect, useContext, useState } from 'react';
-import { Text, View, ImageBackground, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
+import {Text, View,  StyleSheet, FlatList} from 'react-native';
 import GeolocationSvc from '../Services/GeolocationSvc';
 import {AppContext} from '../Providers/AppProvider';
-import {calculateDistance} from '../Utiles';
-import { useNavigation } from '@react-navigation/native';
 import Geolocation from 'react-native-geolocation-service';
 import {PlaceItem} from '../Components/PlaceItem';
-
 
 export const FilteredListeScreen = ({route}) =>{
     const [state, dispatch] = useContext(AppContext);
@@ -27,7 +24,6 @@ export const FilteredListeScreen = ({route}) =>{
             Geolocation.getCurrentPosition(
               (data) => {
                 pos = {longitude: data.coords.longitude, latitude: data.coords.latitude};
-                // return { status: true, pos};
                 dispatch({type: "UPDATE_USER_LOCATION", location: pos})
          
               },
@@ -40,7 +36,7 @@ export const FilteredListeScreen = ({route}) =>{
           
           } catch (error) {
     
-            console.log("getCurrentLatLong::catcherror =>", error);
+            console.log("FilteredListeScreen getCurrentLatLong::catcherror =>", error);
             return { status: false, message: "[MapSvc] Can not get position" };
       
         };
@@ -56,10 +52,7 @@ export const FilteredListeScreen = ({route}) =>{
         }
     }
 
-    useEffect(()=>{
-
-    }, [state])
-
+   
     useEffect(() => {
         if(state.places.lenght > 0){
             filterList(state.places)
@@ -67,9 +60,7 @@ export const FilteredListeScreen = ({route}) =>{
         else{
             async function loadPosts() {
                 try{
-                    const response = await fetch('https://xn--mystre-6ua.fr/wp/wp-json/places/all');
-                    console.log("response", response)
-                    
+                    const response = await fetch('https://xn--mystre-6ua.fr/wp/wp-json/places/all');                    
                     const places = await response.json();
                     filterList(places)
                     dispatch({type: "INIT_ALL_PLACES", places: places }) 
@@ -84,16 +75,14 @@ export const FilteredListeScreen = ({route}) =>{
     }, [])
 
     useEffect(()=>{
-        getLocationPermition();
-    }, [])
+        if(!locationPermission){
+            getLocationPermition();
+        }
+        if(!state.userLocation){
+            initLocation();
+        }
+    })
 
-   
-    useEffect(()=>{
-        if(locationPermission)
-            initLocation()
-    },[locationPermission])
-
-    
     return (
         <View style={styles.container}>
             {

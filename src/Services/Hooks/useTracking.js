@@ -5,11 +5,12 @@ import {AppContext} from '../../Providers/AppProvider';
 import {getPlacesData, calculateDistance, getNotifiedPlaces, updateNotifiedPlaces} from '../../Utiles';
 import {findNearest} from 'geolib';
 import PushNotificationSvc from "../NotificationSvc";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const findCloserPlaceEndSendNotif = async (userLocation) =>{
-  const [state, dispatch] = useContext(AppContext);
 
-  const closestPlace = userLocation ? findNearest(userLocation, state.places) : null;
+const findCloserPlaceEndSendNotif = async (userLocation) => {
+  const places = await AsyncStorage.getItem('stored_places');
+  const closestPlace = userLocation ? findNearest(userLocation, JSON.parse(places)) : null;
   const isCloserEnough = closestPlace ? calculateDistance(userLocation, closestPlace.coords) < 50 : null;
 
   if(isCloserEnough){
@@ -17,15 +18,14 @@ const findCloserPlaceEndSendNotif = async (userLocation) =>{
     const isPlaceHasAlreadyNotified = notifiedPlaces.find(id => id == closestPlace.id);
 
     if(!isPlaceHasAlreadyNotified){
-      // const newNotifiedValues = notifiedPlaces.push(closestPlace.id);
-      // await updateNotifiedPlaces(newNotifiedValues);
-
+      const newNotifiedValues = notifiedPlaces.push(closestPlace.id);
+      await updateNotifiedPlaces(newNotifiedValues);
        PushNotificationSvc.schduleNotification(closestPlace);
     }
   }
 }
 
-const useTracking = (isActive) => {
+export const useTracking = (isActive) => {
   const [state, dispatch] = useContext(AppContext);
   const [location, setLocation] = useState(state.userLocation);
 
@@ -60,7 +60,7 @@ const useTracking = (isActive) => {
       // to perform long running operation on iOS
       // you need to create background task
       BackgroundGeolocation.startTask((taskKey) => {
-        findCloserPlaceEndSendNotif();
+        findCloserPlaceEndSendNotif(location);
         BackgroundGeolocation.endTask(taskKey);
       });
     });
@@ -77,7 +77,7 @@ const useTracking = (isActive) => {
 
     BackgroundGeolocation.on('start', () => {
       console.log("start")
-      findCloserPlaceEndSendNotif()
+      findCloserPlaceEndSendNotif(location)
       //console.log('[INFO] BackgroundGeolocation service has been started');
     });
 
@@ -115,11 +115,12 @@ const useTracking = (isActive) => {
 
     BackgroundGeolocation.on('background', () => {
       console.log('[INFO] App is in background');
-      findCloserPlaceEndSendNotif()
+      findCloserPlaceEndSendNotif(location)
     });
 
     BackgroundGeolocation.on('foreground', () => {
       console.log('[INFO] App is in foreground');
+      findCloserPlaceEndSendNotif()
     });
 
     BackgroundGeolocation.checkStatus((status) => {
@@ -146,7 +147,8 @@ const useTracking = (isActive) => {
     };
   }, [location, isActive]);
 
-  return {location};
+  return {location}
+
 };
 
 export default useTracking;

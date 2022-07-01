@@ -24,7 +24,6 @@ export const MapScreen = () => {
         imgMap={MAPPING}
         onPress={(id, label) => onPressRegion(id, label)}
         containerStyle={styles.myCustomStyle}
-        selectedAreaId="my_area_id"
       />
     </View>
   );

@@ -32,12 +32,11 @@ export const PlaceItem = ({data}) =>{
                         <View >
                             <Image source={Image_Http_URL}  style={{maxWidth:'100%', height:120,  resizeMode: 'cover' }}/>
                         </View>
-                        <Text style={{color: '#FFF', fontWeight:'bold', fontSize:12, padding:5, position:'absolute', bottom:0, right:0}}>{distance}Km</Text>
+                        {state.userLocation && <Text style={styles.kmText}>{distance}Km</Text>}
                     </View>
-            
                     <View style={{width:'50%', height:100, textOverflow: 'ellipsis', padding:5 }}>
-                        <Text style={{color: '#FFF', fontWeight:'bold', fontSize:16, textAlign:'center'}}>{data.name}</Text>
-                        <Text style={{color:'#FFF', fontWeight:'600', fontSize:12 }} numberOfLines={5}>{data.description}</Text>
+                        <Text style={{color: '#F3E0E2', fontWeight:'bold', fontSize:16, textAlign:'center'}}>{data.name}</Text>
+                        <Text style={{color:'#F3E0E2', fontWeight:'600', fontSize:12 }} numberOfLines={5}>{data.description}</Text>
                     </View>   
             </View>
         </TouchableOpacity>
@@ -49,5 +48,16 @@ const styles = StyleSheet.create({
      flex: 1,
      backgroundColor : '#000',
     },
+    kmText: {
+        color: '#F3E0E2', 
+        fontWeight:'bold', 
+        fontSize:12, 
+        padding:4, 
+        position:'absolute', 
+        bottom:-6, 
+        right:0, 
+        backgroundColor:'rgba(0,0,0,0.40)', 
+        borderRadius:5
+    }
   })
 

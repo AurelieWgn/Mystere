@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useContext} from 'react';
 import { StyleSheet, Image } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
@@ -17,13 +17,54 @@ import {ContactScreen} from './src/Screens/ContactScreen';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import 'react-native-gesture-handler';
-import useTracking from "./src/Services/Hooks/useTracking";
+import {useTracking} from "./src/Services/Hooks/useTracking";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
+import Geolocation from 'react-native-geolocation-service';
+import {AppContext} from './src/Providers/AppProvider';
+import RNLocation from 'react-native-location';
+import { AppRegistry } from 'react-native';
+import ReactNativeForegroundService from '@supersami/rn-foreground-service';
+
+RNLocation.configure({
+  distanceFilter: 100, // Meters
+  desiredAccuracy: {
+    ios: 'best',
+    android: 'balancedPowerAccuracy',
+  },
+  // Android only
+  androidProvider: 'auto',
+  interval: 5000, // Milliseconds
+  fastestInterval: 10000, // Milliseconds
+  maxWaitTime: 5000, // Milliseconds
+  // iOS Only
+  activityType: 'other',
+  allowsBackgroundLocationUpdates: false,
+  headingFilter: 1, // Degrees
+  headingOrientation: 'portrait',
+  pausesLocationUpdatesAutomatically: false,
+  showsBackgroundLocationIndicator: false,
+});
+
+ReactNativeForegroundService.add_task(() => useTracking(true), {
+  delay: 100,
+  onLoop: true,
+  taskId: 'taskid',
+  onError: (e) => console.log(`Error logging:`, e),
+});
+
+ReactNativeForegroundService.start({
+    id: 144,
+    title: 'Foreground Service',
+    message: 'you are online!',
+});
+
+
+ReactNativeForegroundService.register();
+
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
-const Drawer = createDrawerNavigator();
 
 // Bottom tab bar will be displayed on :
 const MainTabNavigation = () => {
@@ -31,10 +72,9 @@ const MainTabNavigation = () => {
     <Tab.Navigator 
       initialRouteName="SplashScreen"
       screenOptions= {({  }) => ({
-          tabBarActiveTintColor: '#53e1ca',
+          tabBarActiveTintColor: '#773B43',
           tabBarInactiveTintColor: '#000',
         })}
-
     >
       <Tab.Screen
         name="Home"
@@ -97,7 +137,7 @@ const MainTabNavigation = () => {
 };
 
 const App = () => {
-  const {location} = useTracking(true);
+  const [state, dispatch] = useContext(AppContext);
 
   const initLocation = async() =>{
         try {
@@ -118,32 +158,26 @@ const App = () => {
           
           } catch (error) {
     
-            console.log("getCurrentLatLong::catcherror =>", error);
+            console.log("App.js getCurrentLatLong::catcherror =>", error);
             return { status: false, message: "[MapSvc] Can not get position" };
       
         };
-        // await locationSvc.getCurrantLocation().then(async(pos)=>{
-        //     console.log("pos Liste", pos)
-        //     dispatch({type: "UPDATE_USER_LOCATION", location: pos})
-        // });
+
   }
 
-  
   const emptyNotifiedPlacesFormAsyncStorage = async()=>{
-    console.log("new Date()", typeof new Date())
     try {
       const lastDelete = await AsyncStorage.getItem('lastStorageDelete');
       if(!lastDelete){
         await AsyncStorage.setItem('lastStorageDelete', new Date().toString());
-        await AsyncStorage.removeItem('stored_places');
+        await AsyncStorage.removeItem('notified_places');
       }
       else{
         const twoDaysAgo = moment().subtract(2, 'days');
         if(moment(lastDelete).isBefore(twoDaysAgo)){
-           await AsyncStorage.removeItem('stored_places');
+           await AsyncStorage.removeItem('notified_places');
            await AsyncStorage.setItem('lastStorageDelete', new Date().toString());
         }
-       
       }
       
     } catch (e) {
@@ -154,7 +188,7 @@ const App = () => {
   useEffect(()=>{
       initLocation()
       emptyNotifiedPlacesFormAsyncStorage()
-  })
+  }, [])
 
   return (
     <NavigationContainer>

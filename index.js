@@ -8,6 +8,8 @@ import App from './App';
 import {name as appName} from './app.json';
 import {AppProvider} from "./src/Providers/AppProvider";
 
+
+
 export default function Main(){
     return (
         <AppProvider>

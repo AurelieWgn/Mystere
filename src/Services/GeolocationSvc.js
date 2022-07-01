@@ -42,9 +42,6 @@ export default class GeolocationSvc {
 
 
     async getCurrantLocation (){
-   
-    
-        console.log("this.context", this.context)
       try {
       
         Geolocation.getCurrentPosition(
@@ -55,15 +52,14 @@ export default class GeolocationSvc {
           },
           (error) => {
             // See error code charts below.
-            console.log(error.code, error.message);
+            console.log('GeolocationSvc message',  error.code, error.message);
           },
           { enableHighAccuracy: true}
         )
-          
-        console.log('pos 2', pos)
+
       } catch (error) {
 
-        console.log("getCurrentLatLong::catcherror =>", error);
+        console.log("GeoLocSvc getCurrentLatLong::catcherror =>", error);
         return { status: false, message: "[MapSvc] Can not get position" };
   
     };
