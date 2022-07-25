@@ -72,7 +72,7 @@ const MainTabNavigation = () => {
     <Tab.Navigator 
       initialRouteName="SplashScreen"
       screenOptions= {({  }) => ({
-          tabBarActiveTintColor: '#773B43',
+          tabBarActiveTintColor: 'red',
           tabBarInactiveTintColor: '#000',
         })}
     >
@@ -92,7 +92,7 @@ const MainTabNavigation = () => {
       />
       <Tab.Screen
         name="Recherche"
-        component={SearchScreen}
+        component={PlacesScreen}
         options={{
           headerShown: false,
           title: 'Recherche',
@@ -104,7 +104,8 @@ const MainTabNavigation = () => {
           ),
         }}
       />
-      <Tab.Screen
+     
+      {/* <Tab.Screen
         name="Lieux"
         component={PlacesScreen}
         options={{
@@ -114,6 +115,20 @@ const MainTabNavigation = () => {
             <Image
               source={require('./src/Img/TabBarIcons/place.png')}
               style={{width: 24, height: 24}}
+            />
+          ),
+        }}
+      /> */}
+       <Tab.Screen
+        name="Carte"
+        component={MapScreen}
+        options={{
+          headerShown: false,
+          title: 'Carte',
+          tabBarIcon: () => (
+            <Image
+              source={require('./src/Img/TabBarIcons/la-france.png')}
+              style={{width: 30, height: 30}}
             />
           ),
         }}

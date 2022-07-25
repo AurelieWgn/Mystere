@@ -1,35 +1,85 @@
-import React, { useEffect, useContext, useState } from 'react';
-import { Text, View, ImageBackground, StyleSheet, FlatList, Image, TouchableOpacity, Button, Linking } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import GeolocationSvc from '../Services/GeolocationSvc';
-import {AppContext} from '../Providers/AppProvider';
-import {calculateDistance, getPlacesBetween} from '../Utiles';
-import FloatingMapIcon from '../Components/Icons/FloatingMapIcon';
-import Slider from '@react-native-community/slider';
+import React, { useEffect, useState, useContext } from 'react';
+import { Text, View, ImageBackground, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
+import SearchBar from '../Components/SearchBar';
+import {getPlacesBetween} from '../Utiles';
 import {PlaceItem} from '../Components/PlaceItem';
+import {AppContext} from '../Providers/AppProvider';
+import Slider from '@react-native-community/slider';
+import RadioGroup from 'react-native-radio-buttons-group';
+import GeolocationSvc from '../Services/GeolocationSvc';
 import Geolocation from 'react-native-geolocation-service';
 
+const filterRadioButtonsData = [{
+    id: '1',
+    label: (
+        <Text style={{color: '#FFFFFF'}}>{'Tout'}</Text>
+      ),
+    value: 'all',
+    selected: true,
+    color: '#FFFFFF',
+    size: 14,
+}, 
+{
+    id: '2',
+    label:  (
+        <Text style={{color: '#FFFFFF'}}>{'Filtre par distance'}</Text>
+      ),
+    value: 'distance',
+    color: '#FFFFFF',
+    size: 14,
+}]
 
 export const PlacesScreen = () =>{
     const [state, dispatch] = useContext(AppContext);
+    const [filteredPlaces, setFilteredPlaces] = useState(state.places);
+    const [maxDistanceValue, setMaxDistanceValue] = useState(500);
+    const [searchPhrase, setSearchPhrase]=useState('');
+    const [radioButtons, setRadioButtons] = useState(filterRadioButtonsData);
+    const [selectedRadioDistanceBtn, setSelectedRadioDistanceBtn] = useState('tout');
     const [locationPermission, setLocationPermission] = useState(false);
-    const [placesBetween, setPlacesBetween] = useState([]);
     const locationSvc = new GeolocationSvc();
-    const [maxDistanceValue, setMaxDistanceValue] = useState(50);
 
+    useEffect(()=>{
+        setMaxDistanceValue(500);
+        setFilteredPlaces(state.places);
+    }, []);
+
+    useEffect(()=>{
+        executeFiltering();
+    }, [searchPhrase, maxDistanceValue])
+
+    useEffect(()=>{
+        if(state.userLocation){
+            executeFiltering();
+        }
+    }, [state.userLocation])
+
+    useEffect(()=>{  
+    }, [filteredPlaces])
 
     const getLocationPermition = async()=>{
         locationSvc.askForGeolocationPermission().then((resp)=> {
             setLocationPermission(resp)
         });
     }
+ 
+    useEffect(()=>{
+        if(!locationPermission){
+            getLocationPermition();
+        }
+        if(!state.userLocation && locationPermission){
+            initLocation()
+        }
+    }, [locationPermission])
 
     const initLocation = async() =>{
         try {
       
             Geolocation.getCurrentPosition(
               (data) => {
+                console.log('data', data)
                 pos = {longitude: data.coords.longitude, latitude: data.coords.latitude};
+                // return { status: true, pos};
                 dispatch({type: "UPDATE_USER_LOCATION", location: pos})
          
               },
@@ -42,77 +92,60 @@ export const PlacesScreen = () =>{
           
           } catch (error) {
     
-            console.log("PlaceScreen getCurrentLatLong::catcherror =>", error);
+            console.log("HomeScreen getCurrentLatLong::catcherror =>", error);
             return { status: false, message: "[MapSvc] Can not get position" };
       
         };
     }
 
-    useEffect(()=>{
-        // getLocationPermition();
-        if(state.userLocation){
-            setMaxDistanceValue(50);
-            createChannels();
-            const placesBetween = getPlacesBetween(state.userLocation, state.places, maxDistanceValue);
-            setPlacesBetween(placesBetween);
-        }
-    }, [state.userLocation])
-
-    useEffect(()=>{
-        if(!locationPermission){
-            getLocationPermition();
-        }
-        if(!state.userLocation){
-               initLocation();
-        }
-    }, [])
-
- 
-    const createChannels = () => {
-        // PushNotification.createChannel(
-        //     {
-        //         channelId: "mystere_app",
-        //         channelName: "mystere_app"
-        //     }
-        // )
+    const handleResetSearchValue = () =>{
+        setSearchPhrase('')
+        setFilteredPlaces(state.places)
     }
-
 
     const onChangeSliderDistance = (newDistance) => {
         setMaxDistanceValue(Math.round(newDistance))
-        if(newDistance === 500){
-            setPlacesBetween(state.places)
-        }
-        else{
-            const placesBetween = getPlacesBetween(state.userLocation, state.places, Math.round(newDistance));
-            setPlacesBetween(placesBetween)
-        }
-
     }
 
-    const activateLocation = async () =>{
-        initLocation()
+    const onPressRadioButton = (radioButtonsArray) =>{
+        setRadioButtons(radioButtonsArray);
+        const selectedFilter = radioButtonsArray.filter(item => item.selected)[0].value;
+        setSelectedRadioDistanceBtn(selectedFilter);
+         if(selectedFilter === 'tout'){
+            setMaxDistanceValue(500);
+        }
+        else if(selectedFilter === 'distance'){
+            setMaxDistanceValue(50);
+        }
     }
 
-    
+    const executeFiltering = () =>{
+        const dataToDistanceFilter = searchPhrase !=='' && searchPhrase.length > 2 ? 
+        state.places.filter((places)=>
+            places.name.toLowerCase().includes(searchPhrase.toLowerCase()) ||
+            places.description.toLowerCase().includes(searchPhrase.toLowerCase())
+        ) 
+        : state.places;
+        const placesBetween = maxDistanceValue === 500 ? dataToDistanceFilter : getPlacesBetween(state.userLocation, dataToDistanceFilter, maxDistanceValue);
+        setFilteredPlaces(placesBetween);
+    }
+
     return (
         <View style={styles.container}>
+            <SearchBar 
+                searchPhrase={searchPhrase} 
+                setSearchPhrase={setSearchPhrase}
+                resetSearchValue={handleResetSearchValue}
+            />
+            <RadioGroup 
+                radioButtons={radioButtons} 
+                onPress={onPressRadioButton} 
+                layout='row'
+                labelStyle={{ color:" #FFFFFF" }}
+                containerStyle={{ marginBottom:10 }} 
+            />
             {
-                !state.userLocation && locationPermission &&
-                <View style={styles.sliderContainer}>
-                    <Text style={styles.title}>Activez vote position pour accéder aux lieux les plus proches de vous.</Text>
-                    <Button onPress={() => activateLocation()} title="Activer ma localisation"/>
-                </View>
-            }
-            {
-                !locationPermission && 
-                <View style={styles.sliderContainer}>
-                    <Text style={styles.title}>Autorisez l'accès à votre position pour accéder aux lieux les plus proches de vous.</Text>
-                    <Button onPress={()=>getLocationPermition()} title="Autoriser l'accès à ma position"/>
-                </View>
-            }
-           {
-                state.userLocation &&
+                state.userLocation && selectedRadioDistanceBtn === 'distance' ?
                 <View style={styles.sliderContainer}>
                     <Slider
                         style={{width: '100%', height: 40, color:'#FFF'}}
@@ -125,28 +158,29 @@ export const PlacesScreen = () =>{
                         onValueChange={onChangeSliderDistance}
                         />
                     <Text style={styles.distanceText}>Lieux à {maxDistanceValue === 500 ? "plus" : 'moins'} de {maxDistanceValue} Kms</Text>
-                </View>
+                </View> : null
             }
-           
+
             {
-                placesBetween.length<1 && state.userLocation &&
-                    <Text style={styles.title}>Il n'y à pas de lieux à moins de {maxDistanceValue}km.</Text>
-            }
-            {
-                placesBetween.length>0 &&
-                <>
-                    
+                filteredPlaces.length > 0 ?
+                
                     <FlatList
-                        data={placesBetween}
+                        data={filteredPlaces}
                         renderItem={({item}) => <PlaceItem data={item}/> }
-                        keyExtractor={(item, id) => id}
+                        keyExtractor={(item, id) => item.id}
                         // ListHeaderComponent={()=>   }
                     />
-                </>        
+              
+                : 
+                <>
+                   { 
+                        searchPhrase != "" && searchPhrase.length > 2 
+                        ? <Text style={styles.distanceText}>Votre recherche ne permet pas de vous proposer de lieux ...</Text> 
+                        : null
+                    }
+                </>
+                        
             }
-            <View style={{position:'absolute', bottom:20, right:20}}>
-                <FloatingMapIcon/>
-            </View>
         </View>
     )
 
@@ -162,19 +196,18 @@ const styles = StyleSheet.create({
         textTransform: 'uppercase',
         fontSize: 24,
         fontWeight: '800',
-        color: '#F3E0E2',
+        color: '#FFF',
         textAlign: 'center',
         padding:20
     },
     distanceText:{
          fontSize: 16,
         fontWeight: '800',
-        color: '#F3E0E2',
+        color: '#FFF',
         textAlign: 'center',
         // padding:10
     },
     sliderContainer:{
-        marginTop: 20,
-        marginBottom: 40,
+        marginBottom: 20,
     }
 })

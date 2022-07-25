@@ -22,7 +22,8 @@ export const PlaceItemFullWidth = ({data, name}) =>{
         }
             
     }, [state.userLocation])
-    const Image_Http_URL ={ uri: `${URL_WP_IMG}${data.img}`};    
+
+    const Image_Http_URL = data && data.img ? { uri: `${URL_WP_IMG}${data.img}`} : null;    
     return (
         <TouchableOpacity
             onPress={()=>onPress(data.id, data.name)}
