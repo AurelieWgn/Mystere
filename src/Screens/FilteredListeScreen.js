@@ -52,7 +52,6 @@ export const FilteredListeScreen = ({route}) =>{
         }
     }
 
-   
     useEffect(() => {
         if(state.places.lenght > 0){
             filterList(state.places)

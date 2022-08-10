@@ -1,12 +1,11 @@
 import React, {useEffect, useContext} from 'react';
-import { StyleSheet, Image } from 'react-native';
+import { StyleSheet, Image, View } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {HomeScreen} from './src/Screens/HomeScreen';
 import {SplashScreen} from './src/Screens/SplashScreen';
 import {MenuScreen} from './src/Screens/MenuScreen';
 import {PlacesScreen} from './src/Screens/PlacesScreen';
-import {SearchScreen} from './src/Screens/SearchScreen';
 import {SinglePlaceScreen} from './src/Screens/SinglePlaceScreen';
 import {FilteredListeScreen} from './src/Screens/FilteredListeScreen';
 import {MapScreen} from './src/Screens/MapScreen';
@@ -15,53 +14,12 @@ import {HelpScreen} from './src/Screens/HelpScreen';
 import {MajScreen} from './src/Screens/MajScreen';
 import {ContactScreen} from './src/Screens/ContactScreen';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {createDrawerNavigator} from '@react-navigation/drawer';
 import 'react-native-gesture-handler';
-import {useTracking} from "./src/Services/Hooks/useTracking";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import moment from 'moment';
 import Geolocation from 'react-native-geolocation-service';
 import {AppContext} from './src/Providers/AppProvider';
-import RNLocation from 'react-native-location';
-import { AppRegistry } from 'react-native';
-import ReactNativeForegroundService from '@supersami/rn-foreground-service';
-
-RNLocation.configure({
-  distanceFilter: 100, // Meters
-  desiredAccuracy: {
-    ios: 'best',
-    android: 'balancedPowerAccuracy',
-  },
-  // Android only
-  androidProvider: 'auto',
-  interval: 5000, // Milliseconds
-  fastestInterval: 10000, // Milliseconds
-  maxWaitTime: 5000, // Milliseconds
-  // iOS Only
-  activityType: 'other',
-  allowsBackgroundLocationUpdates: false,
-  headingFilter: 1, // Degrees
-  headingOrientation: 'portrait',
-  pausesLocationUpdatesAutomatically: false,
-  showsBackgroundLocationIndicator: false,
-});
-
-ReactNativeForegroundService.add_task(() => useTracking(true), {
-  delay: 100,
-  onLoop: true,
-  taskId: 'taskid',
-  onError: (e) => console.log(`Error logging:`, e),
-});
-
-ReactNativeForegroundService.start({
-    id: 144,
-    title: 'Foreground Service',
-    message: 'you are online!',
-});
-
-
-ReactNativeForegroundService.register();
-
+import {MenuIcon} from "./src/Components/MenuIcon";
+import {emptyNotifiedPlacesFormAsyncStorage, stopStask, startStask, backgroundTaskIsRunning} from './src/Utiles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -72,9 +30,10 @@ const MainTabNavigation = () => {
     <Tab.Navigator 
       initialRouteName="SplashScreen"
       screenOptions= {({  }) => ({
-          tabBarActiveTintColor: 'red',
+          tabBarActiveTintColor: '#773B43',
           tabBarInactiveTintColor: '#000',
-        })}
+          tabBarShowLabel: false,
+        })}       
     >
       <Tab.Screen
         name="Home"
@@ -82,11 +41,16 @@ const MainTabNavigation = () => {
         options={{
           headerShown: false,
           title: 'Accueil',
-          tabBarIcon: () => (
-            <Image
-              source={require('./src/Img/TabBarIcons/home.png')}
-              style={{width: 24, height: 24}}
-            />
+          tabBarIcon: (props) => (
+             <MenuIcon 
+              name='Home'
+              {...props}
+            >
+              <Image
+                source={require('./src/Img/TabBarIcons/home.png')}
+                style={{width: 24, height: 24}}
+              />   
+            </MenuIcon>
           ),
         }}
       />
@@ -96,41 +60,37 @@ const MainTabNavigation = () => {
         options={{
           headerShown: false,
           title: 'Recherche',
-          tabBarIcon: () => (
-            <Image
-              source={require('./src/Img/TabBarIcons/search.png')}
-              style={{width: 24, height: 24}}
-            />
+          tabBarIcon: (props) => (
+             <MenuIcon 
+              name='Recherche'
+              {...props}
+            >
+              <Image
+                source={require('./src/Img/TabBarIcons/search.png')}
+                style={{width: 20, height: 20}}
+              />   
+            </MenuIcon>
           ),
         }}
       />
-     
-      {/* <Tab.Screen
-        name="Lieux"
-        component={PlacesScreen}
-        options={{
-          headerShown: false,
-          title: 'Lieux',
-          tabBarIcon: () => (
-            <Image
-              source={require('./src/Img/TabBarIcons/place.png')}
-              style={{width: 24, height: 24}}
-            />
-          ),
-        }}
-      /> */}
        <Tab.Screen
         name="Carte"
         component={MapScreen}
         options={{
           headerShown: false,
           title: 'Carte',
-          tabBarIcon: () => (
-            <Image
-              source={require('./src/Img/TabBarIcons/la-france.png')}
-              style={{width: 30, height: 30}}
-            />
-          ),
+           tabBarIcon: (props) => (
+            <MenuIcon 
+              name='Carte'
+              {...props}
+            >
+              <Image
+                source={require('./src/Img/TabBarIcons/la-france.png')}
+                style={{width: 24, height: 24}}
+              />   
+            </MenuIcon>
+          )
+        
         }}
       />
       <Tab.Screen
@@ -139,20 +99,53 @@ const MainTabNavigation = () => {
         options={{
           headerShown: false,
           title: 'Menu',
-          tabBarIcon: () => (
-            <Image
-              source={require('./src/Img/TabBarIcons/menu.png')}
-              style={{width: 24, height: 24}}
-            />
-          ),
+          tabBarIcon: (props) => (
+            <MenuIcon 
+              name='Menu'
+              {...props}
+            >
+              <Image
+                source={require('./src/Img/TabBarIcons/menu.png')}
+                style={{width: 24, height: 24}}
+              />   
+            </MenuIcon>
+          )
         }}
       />
     </Tab.Navigator>
   );
 };
 
+
 const App = () => {
   const [state, dispatch] = useContext(AppContext);
+
+  React.useEffect(() => {
+    const startBackgroundService = async () => {
+       try {
+            const notifiactionsStatus = await AsyncStorage.getItem('notifications_status');
+    
+            if(notifiactionsStatus == null){
+              await AsyncStorage.setItem('notifications_status', 'true');
+              if(!backgroundTaskIsRunning()){
+                await startStask();  
+              }
+            }
+            else{
+               if(!backgroundTaskIsRunning() && JSON.parse(notifiactionsStatus)){
+                await startStask();   
+              }
+              else if(backgroundTaskIsRunning() && !JSON.parse(notifiactionsStatus)){
+                await stopStask();  
+              } 
+            }
+        } catch (e) {
+            console.log("[App] --> Can't set notifications_status to true", e)
+        } 
+    };
+    startBackgroundService();
+  }, []);
+
 
   const initLocation = async() =>{
         try {
@@ -180,26 +173,7 @@ const App = () => {
 
   }
 
-  const emptyNotifiedPlacesFormAsyncStorage = async()=>{
-    try {
-      const lastDelete = await AsyncStorage.getItem('lastStorageDelete');
-      if(!lastDelete){
-        await AsyncStorage.setItem('lastStorageDelete', new Date().toString());
-        await AsyncStorage.removeItem('notified_places');
-      }
-      else{
-        const twoDaysAgo = moment().subtract(2, 'days');
-        if(moment(lastDelete).isBefore(twoDaysAgo)){
-           await AsyncStorage.removeItem('notified_places');
-           await AsyncStorage.setItem('lastStorageDelete', new Date().toString());
-        }
-      }
-      
-    } catch (e) {
-      console.log("[Utiles] --> emptyNotifiedPlacesFormAsyncStorage")
-    }
-  }
-
+  
   useEffect(()=>{
       initLocation()
       emptyNotifiedPlacesFormAsyncStorage()
@@ -215,7 +189,7 @@ const App = () => {
         />
         <Stack.Screen
           name="MainHome"
-          options={{headerShown: false, title: 'Home'}}
+          options={{headerShown: false, title: 'Home', gestureEnabled: false}}
           component={MainTabNavigation}
         />
         <Stack.Screen

@@ -35,6 +35,12 @@
             <action android:name="android.intent.action.MAIN" />
             <category android:name="android.intent.category.LAUNCHER" />
         </intent-filter>
+        <intent-filter android:label="filter_react_native">
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="mystery" />
+        </intent-filter>
       </activity>
 
 
@@ -76,8 +82,7 @@
       <!-- End push Notif -->
     
         <service android:name="com.supersami.foregroundservice.ForegroundService" android:foregroundServiceType="location" ></service>
-
         <service android:name="com.supersami.foregroundservice.ForegroundServiceTask" android:foregroundServiceType="location" ></service>
-
+        <service android:name="com.asterinet.react.bgactions.RNBackgroundActionsTask" />
     </application>
 </manifest>

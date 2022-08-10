@@ -1,6 +1,4 @@
-import React, {Component} from "react";
 import PushNotification from "react-native-push-notification";
-
 class PushNotificationSvc {
   constructor() {
     PushNotification.configure({
@@ -33,7 +31,6 @@ class PushNotificationSvc {
   }
 
   schduleNotification(place) {
-    console.log("place--------->", place)
     PushNotification.localNotificationSchedule({
       channelId: 'mystere_app',
       title: `${place.name}`,

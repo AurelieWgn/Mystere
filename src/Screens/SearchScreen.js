@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from 'react';
-import { Text, View, ImageBackground, StyleSheet, FlatList, Image, TouchableOpacity } from 'react-native';
+import { Text, View, StyleSheet, FlatList} from 'react-native';
 import SearchBar from '../Components/SearchBar';
 import {getPlacesBetween} from '../Utiles';
 import {PlaceItem} from '../Components/PlaceItem';

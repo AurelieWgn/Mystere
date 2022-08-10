@@ -1,10 +1,13 @@
 import {getDistance, orderByDistance} from 'geolib';
+import {API_URL_ALL_PLACES} from './env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import moment from 'moment';
+import BackgroundService from 'react-native-background-actions';
+import  {locationAndNotificationTask} from '../src/tasks/CheckLocation';
 
 const calculateDistance = (from, to) => {
     var dis = getDistance(from, to);
-    return dis/1000;
+    return (dis/1000).toFixed(2);
 };
   
 const storePlacesData = async (value) => {
@@ -21,7 +24,7 @@ const getPlacesData = async () => {
     const value = await AsyncStorage.getItem('stored_places');
     return JSON.parse(value);
   } catch(e) {
-     console.log("[Utiles] --> Can't get stored_places")
+     console.log("[Utiles] --> Can't get stored_places", e)
   }
 }
 
@@ -36,6 +39,7 @@ const getNotifiedPlaces = async () => {
   }
 }
 
+// value : number[]
 const updateNotifiedPlaces = async (value) =>{
   try {
     await AsyncStorage.setItem('notified_places', JSON.stringify(value));
@@ -65,7 +69,7 @@ const getPlacesBetween = (position, places, distance) => {
 
 const loadPosts = async() => {
     try{
-        const response = await fetch('https://xn--mystre-6ua.fr/wp/wp-json/places/all');                    
+        const response = await fetch(API_URL_ALL_PLACES);                    
         const places = await response.json();
         filterList(places)
         dispatch({type: "INIT_ALL_PLACES", places: places }) 
@@ -73,6 +77,65 @@ const loadPosts = async() => {
     catch(err){
         console.log("FilteredListeScreen full liste fetch : ", err)
     }           
+}
+
+const emptyNotifiedPlacesFormAsyncStorage = async()=>{
+    try {
+      const lastDelete = await AsyncStorage.getItem('lastStorageDelete');
+      if(!lastDelete){
+        await AsyncStorage.setItem('lastStorageDelete', moment().toString());
+        await AsyncStorage.removeItem('notified_places');
+      }
+      else{
+        if(moment(lastDelete).isBefore(twoDaysAgo)){
+           await AsyncStorage.removeItem('notified_places');
+           await AsyncStorage.setItem('lastStorageDelete', moment().toString());
+        }
+      }
+      
+    } catch (e) {
+      console.log("[Utiles] --> emptyNotifiedPlacesFormAsyncStorage")
+    }
+  }
+
+
+const sleep = (time) => new Promise((resolve) => setTimeout(() => resolve(), time));
+
+const notificationsTask = async (taskDataArguments) => {
+    const { delay } = taskDataArguments;
+    await new Promise( async (resolve) => {
+        for (let i = 0; BackgroundService.isRunning(); i++) {
+            locationAndNotificationTask();
+            await sleep(delay);
+        }
+    });
+};
+
+const options = {
+    taskName: 'Notifications',
+    taskTitle: 'Mystère Information',
+    taskDesc: 'Descativer les notifications',
+    taskIcon: {
+        name: 'ic_launcher',
+        type: 'mipmap',
+    },
+    color: '#ff00ff',
+    linkingURI: 'mystery://',
+    parameters: {
+        delay: 900000, // 15min
+    },
+};
+
+const startStask = async () =>{
+  await BackgroundService.start(notificationsTask, options); 
+}
+
+const stopStask = async () =>{
+  await BackgroundService.stop();
+}
+
+const backgroundTaskIsRunning = () =>{
+  return BackgroundService.isRunning();
 }
 
 
@@ -85,5 +148,9 @@ export {
   getRandomItem, 
   getNearestPlaces, 
   getPlacesBetween,
-  loadPosts
+  loadPosts,
+  emptyNotifiedPlacesFormAsyncStorage,
+  startStask,
+  stopStask,
+  backgroundTaskIsRunning
 }

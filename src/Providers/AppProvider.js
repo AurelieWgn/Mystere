@@ -6,7 +6,6 @@ const initialState = {
     userLocation : null,
 };
 
-
 const AppContext = React.createContext();
 
 const AppReduceur = (state, action) =>{
@@ -14,8 +13,7 @@ const AppReduceur = (state, action) =>{
     let newState = {...state};
     switch(action.type){
         case 'INIT_RANDOM_PLACES': 
-           
-    
+        
         case 'INIT_ALL_PLACES': 
             newState.places = action.places;
             return newState
@@ -27,7 +25,6 @@ const AppReduceur = (state, action) =>{
         case 'INIT_FILTERED_PLACES': 
             newState.filteredPlaces = action.filteredPlaces;
             return newState
-            
     }
 
 }

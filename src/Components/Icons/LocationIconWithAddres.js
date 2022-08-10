@@ -3,7 +3,7 @@ import { View, Image, Text} from 'react-native';
 
 const LocationIconWithAddres = ({addres}) =>{
     return (
-        <View style={{display:'flex', flexDirection:'row'}}>
+        <View style={{display:'flex', flexDirection:'row', maxWidth:'98%'}}>
             <View style={{margin: 3, marginLeft:0}}>
                 <Image source={require('../../Img/Places/red_place.png')} style={{width:16, height:16}}/>
             </View>

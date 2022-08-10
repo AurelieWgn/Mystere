@@ -13,6 +13,7 @@ import java.util.List;
 import com.facebook.react.bridge.JSIModulePackage;
 import com.swmansion.reanimated.ReanimatedJSIModulePackage;
 import com.marianhello.bgloc.react.BackgroundGeolocationPackage;  
+import com.jamesisaac.rnbackgroundtask.BackgroundTaskPackage;
 
 
 public class MainApplication extends Application implements ReactApplication {
@@ -55,7 +56,7 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
-    
+    BackgroundTaskPackage.useContext(this);
   }
 
   /**

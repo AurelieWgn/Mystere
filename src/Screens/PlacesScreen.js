@@ -32,10 +32,10 @@ const filterRadioButtonsData = [{
 export const PlacesScreen = () =>{
     const [state, dispatch] = useContext(AppContext);
     const [filteredPlaces, setFilteredPlaces] = useState(state.places);
-    const [maxDistanceValue, setMaxDistanceValue] = useState(500);
+    const [maxDistanceValue, setMaxDistanceValue] = useState(50);
     const [searchPhrase, setSearchPhrase]=useState('');
     const [radioButtons, setRadioButtons] = useState(filterRadioButtonsData);
-    const [selectedRadioDistanceBtn, setSelectedRadioDistanceBtn] = useState('tout');
+    const [selectedRadioDistanceBtn, setSelectedRadioDistanceBtn] = useState('all');
     const [locationPermission, setLocationPermission] = useState(false);
     const locationSvc = new GeolocationSvc();
 
@@ -77,7 +77,6 @@ export const PlacesScreen = () =>{
       
             Geolocation.getCurrentPosition(
               (data) => {
-                console.log('data', data)
                 pos = {longitude: data.coords.longitude, latitude: data.coords.latitude};
                 // return { status: true, pos};
                 dispatch({type: "UPDATE_USER_LOCATION", location: pos})
@@ -111,21 +110,17 @@ export const PlacesScreen = () =>{
         setRadioButtons(radioButtonsArray);
         const selectedFilter = radioButtonsArray.filter(item => item.selected)[0].value;
         setSelectedRadioDistanceBtn(selectedFilter);
-         if(selectedFilter === 'tout'){
-            setMaxDistanceValue(500);
-        }
-        else if(selectedFilter === 'distance'){
-            setMaxDistanceValue(50);
-        }
+        selectedFilter === 'all' ?  setMaxDistanceValue(500) : setMaxDistanceValue(50) 
     }
 
     const executeFiltering = () =>{
-        const dataToDistanceFilter = searchPhrase !=='' && searchPhrase.length > 2 ? 
+        const dataToDistanceFilter = searchPhrase.length > 2 ? 
         state.places.filter((places)=>
             places.name.toLowerCase().includes(searchPhrase.toLowerCase()) ||
             places.description.toLowerCase().includes(searchPhrase.toLowerCase())
         ) 
         : state.places;
+        
         const placesBetween = maxDistanceValue === 500 ? dataToDistanceFilter : getPlacesBetween(state.userLocation, dataToDistanceFilter, maxDistanceValue);
         setFilteredPlaces(placesBetween);
     }
@@ -174,7 +169,7 @@ export const PlacesScreen = () =>{
                 : 
                 <>
                    { 
-                        searchPhrase != "" && searchPhrase.length > 2 
+                        (searchPhrase != "" && searchPhrase.length > 2) || filteredPlaces.length < 1
                         ? <Text style={styles.distanceText}>Votre recherche ne permet pas de vous proposer de lieux ...</Text> 
                         : null
                     }

@@ -35,18 +35,21 @@ export const SinglePlaceScreen = ({route}) =>{
                 <Image source={Image_Http_URL}  style={styles.placeImg}/>
                 {distance && <Text style={styles.KmText}>{distance}Km</Text>}
             </View>
-            <View style={{padding:10}}>
-                <LocationIconWithAddres addres={place.addres}/>
-                <View style={{marginBottom:20}}></View>
+            <View style={{padding:15, paddingBottom:10}}>
+                <View style={{marginBottom:20}}>
+                    <LocationIconWithAddres addres={place.addres}/>
+                </View>
                 <Button
                     onPress={()=>onPressShowGoogleMap()}
-                    title="Localisation GPS"
+                    title="Voir sur Google Map"
                     color="#773B43"
                     accessibilityLabel="Localisation GPS"
                 />
-                <ScrollView>
-                    <Text style={styles.descriptionText}>{place.description}</Text>
-                </ScrollView>
+                <View style={{maxHeight:'68%', paddingTop:20}}>
+                    <ScrollView>
+                        <Text style={styles.descriptionText}>{place.description}</Text>
+                    </ScrollView>
+                </View>
             </View>
         </View>
     )
@@ -65,7 +68,9 @@ const styles = StyleSheet.create({
         padding:5, 
         position:'absolute', 
         bottom:0, 
-        right:0
+        right:0,
+        backgroundColor:'rgba(0,0,0,0.40)', 
+        borderRadius:5,  
     },
     placeImg:{
         maxWidth:'100%', 
