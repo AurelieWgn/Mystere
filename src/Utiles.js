@@ -114,7 +114,7 @@ const notificationsTask = async (taskDataArguments) => {
 const options = {
     taskName: 'Notifications',
     taskTitle: 'Mystère Information',
-    taskDesc: 'Descativer les notifications',
+    taskDesc: 'Les notifications sont actives',
     taskIcon: {
         name: 'ic_launcher',
         type: 'mipmap',

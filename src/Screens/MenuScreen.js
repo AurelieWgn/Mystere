@@ -91,9 +91,11 @@ const styles = StyleSheet.create({
     },
     notifItemText:{
         marginRight: 5,
+        color: "#595959",
     },
     notifItemSubText:{
         textAlign:'center',
-        fontSize:12
+        fontSize:12,
+        color: "#595959",
     }
   })

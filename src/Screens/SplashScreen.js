@@ -61,7 +61,7 @@ export const SplashScreen = () => {
         Découvrir la france autrement {'\n'} frissons au rendez-vous{' '}
       </Text>
       <View style={{marginTop: 80}}>
-        <Text style={{fontSize: 18}}> Chargement en cours... </Text>
+        <Text style={{fontSize: 18, color: "#3d3d3d"}}> Chargement en cours... </Text>
         <ProgressBar styleAttr="Horizontal" color="#000" />
       </View>
     </View>

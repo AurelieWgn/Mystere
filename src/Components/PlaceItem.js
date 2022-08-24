@@ -20,7 +20,7 @@ export const PlaceItem = ({data}) =>{
             const distance = calculateDistance(state.userLocation, data.coords);
             setDistance(distance);
         }  
-    }, [state.userLocation])
+    })
 
     return (
         <TouchableOpacity

@@ -200,7 +200,6 @@ dependencies {
     implementation "com.facebook.react:react-native:0.67.3"  // From node_modules
 
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
-    compile project(':@mauron85_react-native-background-geolocation')
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'

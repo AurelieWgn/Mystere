@@ -5,6 +5,7 @@ import GeolocationSvc from '../Services/GeolocationSvc';
 import {AppContext} from '../Providers/AppProvider';
 import Geolocation from 'react-native-geolocation-service';
 import {PlaceItem} from '../Components/PlaceItem';
+import {API_URL_ALL_PLACES} from '../env';
 
 export const FilteredListeScreen = ({route}) =>{
     const [state, dispatch] = useContext(AppContext);
@@ -53,13 +54,14 @@ export const FilteredListeScreen = ({route}) =>{
     }
 
     useEffect(() => {
+        dispatch({type: "INIT_FILTERED_PLACES", filteredPlaces: []});
         if(state.places.lenght > 0){
             filterList(state.places)
         }
         else{
             async function loadPosts() {
                 try{
-                    const response = await fetch('https://xn--mystre-6ua.fr/wp/wp-json/places/all');                    
+                    const response = await fetch(API_URL_ALL_PLACES);                    
                     const places = await response.json();
                     filterList(places)
                     dispatch({type: "INIT_ALL_PLACES", places: places }) 
