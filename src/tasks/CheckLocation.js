@@ -7,7 +7,7 @@ import {findNearest} from 'geolib';
 const findCloserPlaceEndSendNotif = async (userLocation) => {
   const places = await AsyncStorage.getItem('stored_places');
   const closestPlace = userLocation ? findNearest(userLocation, JSON.parse(places)) : null;
-  const isCloserEnough = closestPlace ? calculateDistance(userLocation, closestPlace.coords) < 3 : null;
+  const isCloserEnough = closestPlace ? calculateDistance(userLocation, closestPlace.coords) < 50 : null;
 
   if(isCloserEnough){
     const notifiedPlaces = await getNotifiedPlaces();
