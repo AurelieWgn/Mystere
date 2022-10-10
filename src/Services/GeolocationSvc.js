@@ -16,8 +16,8 @@ export default class GeolocationSvc {
             //   ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
             }),
             {
-              title: 'Mystere !',
-              message: 'Mystere a besoin de votre position pour fonctionner entierement.',
+              title: 'Mystère !',
+              message: 'Mystère a besoin de votre position pour fonctionner entierement.',
             },
           );
         
@@ -32,8 +32,8 @@ export default class GeolocationSvc {
             //   ios: PERMISSIONS.IOS.LOCATION_WHEN_IN_USE,
             }),
             {
-              title: 'Mystere !',
-              message: 'Mystere a besoin de votre position pour fonctionner entierement.',
+              title: 'Mystère !',
+              message: 'Mystère a besoin de votre position pour fonctionner entierement.',
             },
           );
         
