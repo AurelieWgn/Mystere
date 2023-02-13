@@ -111,7 +111,7 @@ const MAPPING = [
   },
   {
     id: '13',
-    name: "Provence-Alpes-Côte d'Azu",
+    name: "Provence-Alpes-Côte d'Azur",
     shape: 'circle',
     radius: 45,
     x1: '80%',
