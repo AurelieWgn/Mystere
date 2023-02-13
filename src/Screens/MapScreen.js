@@ -1,5 +1,5 @@
-import React, {useEffect, useContext, useState} from 'react';
-import {View, Text, Image, ImageBackground, StyleSheet} from 'react-native';
+import React from 'react';
+import {View, Text, StyleSheet} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import ImageMapper from '../Components/Mapper';
 import MAPPING from '../RegionsMap';

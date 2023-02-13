@@ -45,7 +45,7 @@ export const SinglePlaceScreen = ({route}) =>{
                     color="#773B43"
                     accessibilityLabel="Localisation GPS"
                 />
-                <View style={{height:'80%', paddingTop:20}}>
+                <View style={{height:'50%', paddingTop:20}}>
                     <ScrollView>
                         <Text style={styles.descriptionText}>{place.description}</Text>
                     </ScrollView>
