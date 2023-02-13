@@ -61,7 +61,7 @@ const MAPPING = [
   },
   {
     id: '4',
-    name: 'Centre',
+    name: 'Centre-Val de Loire',
     shape: 'circle',
     radius: 50,
     x1: '43%',
@@ -71,7 +71,7 @@ const MAPPING = [
   },
   {
     id: '2',
-    name: 'Bourgogne-Franche-Compté',
+    name: 'Bourgogne-Franche-Comté',
     shape: 'circle',
     radius: 50,
     x1: '65%',
@@ -111,7 +111,7 @@ const MAPPING = [
   },
   {
     id: '13',
-    name: 'Provence-alpes',
+    name: "Provence-Alpes-Côte d'Azu",
     shape: 'circle',
     radius: 45,
     x1: '80%',

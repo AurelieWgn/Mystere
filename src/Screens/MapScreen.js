@@ -15,7 +15,7 @@ export const MapScreen = () => {
   };
 
   return (
-    <View style={{position: 'relative'}}>
+    <View style={styles.container}>
       <Text style={styles.title}>Sélectionnez une région</Text>
       <ImageMapper
         imgHeight={400}
@@ -31,22 +31,25 @@ export const MapScreen = () => {
 
 const styles = StyleSheet.create({
     container: {
-     flex: 1,
-     backgroundColor : '#000',
-     padding:5
+    //  flex: 1,
+    //  display: 'flex',
+    //  flexDirection: 'column',
+    //  backgroundColor : '#000',
+    //  padding:5
     },
-     title:{
+    title:{
         textTransform: 'uppercase',
         fontSize: 24,
         fontWeight: '800',
         color: '#000',
         textAlign: 'center',
-        padding:20
+        padding:20,
+        // paddingBottom: 0,
     },
-     myCustomStyle: {
-    width: '100%',
-    padding: 10,
-    marginTop: '16%',
+    myCustomStyle: {
+      width: '100%',
+      padding: 10,
+      marginTop: 30,
   },
 })
 
