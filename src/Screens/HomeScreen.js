@@ -1,6 +1,7 @@
 
 import React, { useEffect, useContext, useState } from 'react';
 import { Text, View, StyleSheet, FlatList} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import GeolocationSvc from '../Services/GeolocationSvc';
 import Geolocation from 'react-native-geolocation-service';
 import {AppContext} from '../Providers/AppProvider';
@@ -12,6 +13,7 @@ export const HomeScreen = () =>{
     const [locationPermission, setLocationPermission] = useState(false);
     const [randomPlaces, setRandom] = useState([]);
     const locationSvc = new GeolocationSvc();
+    const navigation = useNavigation();
 
     const getLocationPermition = async()=>{
         locationSvc.askForGeolocationPermission().then((resp)=> {
@@ -45,7 +47,6 @@ export const HomeScreen = () =>{
         };
     }
 
-
     useEffect(()=>{
         if(!locationPermission){
             getLocationPermition();
@@ -55,22 +56,31 @@ export const HomeScreen = () =>{
         }
     }, [locationPermission])
     
+    useEffect(()=>{
+        const numberOfPlaces = 5;
+        let finalPlaceArray = []
+        if(state.places){
+            for(let i = 0; i < numberOfPlaces; i++){
+                let item = getRandomItem(state.places);
+                finalPlaceArray.push(item);
+            }
+            setRandom([...new Set(finalPlaceArray)])
+        } 
+        else{
+            console.log('pas de lieux ! ')
+        } 
+    },[state.places])
 
+    useEffect(
+    () =>
+      navigation.addListener('beforeRemove', (e) => {
+       
+        // Prevent default behavior of leaving the screen
+        e.preventDefault();
 
-  useEffect(()=>{
-      const numberOfPlaces = 5;
-      let finalPlaceArray = []
-      if(state.places){
-        for(let i = 0; i < numberOfPlaces; i++){
-            let item = getRandomItem(state.places);
-            finalPlaceArray.push(item);
-        }
-        setRandom([...new Set(finalPlaceArray)])
-      } 
-      else{
-          console.log('pas de lieux ! ')
-      } 
-  },[state.places])
+      }),
+    [navigation]
+  );
     
     return (
         <View style={styles.container}>

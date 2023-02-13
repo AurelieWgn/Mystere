@@ -45,7 +45,7 @@ export const SinglePlaceScreen = ({route}) =>{
                     color="#773B43"
                     accessibilityLabel="Localisation GPS"
                 />
-                <View style={{maxHeight:'68%', paddingTop:20}}>
+                <View style={{maxHeight:'80%', paddingTop:20}}>
                     <ScrollView>
                         <Text style={styles.descriptionText}>{place.description}</Text>
                     </ScrollView>
@@ -90,7 +90,7 @@ const styles = StyleSheet.create({
         fontWeight:'400', 
         fontSize:14, 
         paddingTop:10, 
-        textAlign:'justify',
+        textAlign:'left',
         lineHeight: 20
     },
     titleAddresContainer: {

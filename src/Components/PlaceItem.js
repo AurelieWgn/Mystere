@@ -36,7 +36,7 @@ export const PlaceItem = ({data}) =>{
                     </View>
                     <View style={{width:'50%', height:100, textOverflow: 'ellipsis', padding:5 }}>
                         <Text style={{color: '#F3E0E2', fontWeight:'bold', fontSize:16, textAlign:'left'}}>{data.name}</Text>
-                        <Text style={{color:'#F3E0E2', fontWeight:'600', fontSize:12, textAlign:'justify' }} numberOfLines={5}>{data.description}</Text>
+                        <Text style={{color:'#F3E0E2', fontWeight:'600', fontSize:12, textAlign:'left' }} numberOfLines={5}>{data.description}</Text>
                     </View>   
             </View>
         </TouchableOpacity>

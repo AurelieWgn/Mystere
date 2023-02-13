@@ -1,6 +1,6 @@
 
 import React, { useEffect, useContext, useState } from 'react';
-import {Text, View,  StyleSheet, FlatList} from 'react-native';
+import {Text, View,  StyleSheet, FlatList, ActivityIndicator} from 'react-native';
 import GeolocationSvc from '../Services/GeolocationSvc';
 import {AppContext} from '../Providers/AppProvider';
 import Geolocation from 'react-native-geolocation-service';
@@ -10,6 +10,7 @@ import {API_URL_ALL_PLACES} from '../env';
 export const FilteredListeScreen = ({route}) =>{
     const [state, dispatch] = useContext(AppContext);
     const [locationPermission, setLocationPermission] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const locationSvc = new GeolocationSvc();
     const { regionId  } = route.params;
 
@@ -71,7 +72,9 @@ export const FilteredListeScreen = ({route}) =>{
                 }
                
             }
-            loadPosts()
+            loadPosts().then(()=>{
+                setIsLoading(false);
+            })
         }
     }, [])
 
@@ -87,6 +90,7 @@ export const FilteredListeScreen = ({route}) =>{
     return (
         <View style={styles.container}>
             {
+                isLoading ? <View style={styles.loaderContainer}><ActivityIndicator size="large" color="#FFF"/></View>: 
                 state.filteredPlaces.length > 0  ?
                     <FlatList
                         data={state.filteredPlaces}
@@ -94,8 +98,8 @@ export const FilteredListeScreen = ({route}) =>{
                         keyExtractor={(item, id) => id}
                     /> 
                 : <Text style={{color:"#FFF", fontSize:16, textAlign:'center', padding:20}}>Il n'y à pas encore de lieux dans cette région ...</Text>
+            
             }
-           
         </View>
     )
 }
@@ -105,5 +109,9 @@ const styles = StyleSheet.create({
      flex: 1,
      backgroundColor : '#000',
     },
+    loaderContainer:{
+        height:'100%',
+        paddingTop:50,
+    }
   })
 
