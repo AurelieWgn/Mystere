@@ -36,14 +36,14 @@ const MainTabNavigation = () => {
         })}       
     >
       <Tab.Screen
-        name="Home"
+        name="Accueil"
         component={HomeScreen}
         options={{
           headerShown: false,
           title: 'Accueil',
           tabBarIcon: (props) => (
              <MenuIcon 
-              name='Home'
+              name='Accueil'
               {...props}
             >
               <Image
