@@ -51,7 +51,7 @@ class ImageMapper extends Component {
           resizeMode="contain">
           {imgMap.map((item, index) => (
             <TouchableOpacity
-              key={item.name}
+              key={item.key}
               onPress={event => this.props.onPress(item.id, item.name)}
               style={[{position: 'absolute'}, this.buildStyle(item, index)]}
             />
