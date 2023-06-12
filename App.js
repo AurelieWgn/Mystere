@@ -20,6 +20,8 @@ import {AppContext} from './src/Providers/AppProvider';
 import {MenuIcon} from "./src/Components/MenuIcon";
 import {emptyNotifiedPlacesFormAsyncStorage, stopStask, startStask, backgroundTaskIsRunning} from './src/Utiles';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { CGVScreen } from './src/Screens/CGVScreen';
+import { CGUScreen } from './src/Screens/CGUScreen';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -43,7 +45,7 @@ const MainTabNavigation = () => {
           title: 'Accueil',
           tabBarIcon: (props) => (
              <MenuIcon 
-              name='Home'
+              name='Accueil'
               {...props}
             >
               <Image
@@ -226,6 +228,16 @@ const App = () => {
           name="helpScreen"
           component={HelpScreen}
           options={{headerShown: true, title: 'Besoin d\'aide ?'}}
+        />
+          <Stack.Screen
+          name="CGVScreen"
+          component={CGVScreen}
+          options={{headerShown: true, title: 'Conditions général de vente'}}
+        />
+         <Stack.Screen
+          name="CGUScreen"
+          component={CGUScreen}
+          options={{headerShown: true, title: "Conditions général d\'utilisation"}}
         />
       </Stack.Navigator>
     </NavigationContainer>

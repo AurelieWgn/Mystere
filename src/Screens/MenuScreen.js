@@ -7,7 +7,7 @@ import {stopStask, startStask, backgroundTaskIsRunning} from '../Utiles';
 
 export const MenuScreen = () =>{
     const navigation = useNavigation();
-    const [isEnabled, setIsEnabled] = React.useState(true);
+    const [isEnabled, setIsEnabled] = React.useState(false);
     const toggleSwitch = async () => {
         setIsEnabled(!isEnabled)
         await AsyncStorage.setItem('notifications_status', `${!isEnabled}`)
@@ -31,15 +31,28 @@ export const MenuScreen = () =>{
         initToggle();
     }, [])
 
+    const handleEmail = () => {
+        const email = 'appmystere@gmail.com';
+        const subject = 'Demande de contact';
+        const mailtoUrl = `mailto:${email}?subject=${subject}`;
+
+        Linking.openURL(mailtoUrl)
+            .catch((error) => {
+            console.error('Failed to open mail client:', error);
+            });
+    };
+
     return (
         <ScreenContainer>
             <View style={styles.itemsContainer}>
                 <Image source={require('../Img/Mystere_logo.png')} style={styles.logo} />
                 <Text  style={styles.menuItem} onPress={()=>navigation.navigate('mapScreen')}>Carte de France</Text>
-                <Text  style={styles.menuItem} onPress={()=>navigation.navigate('contactScreen')}>Contact</Text>
-                <Text  style={styles.menuItem} onPress={()=>navigation.navigate('mentionsScreen')}>Mentions légales</Text>
-                <Text  style={styles.menuItem} onPress={()=>navigation.navigate('majScreen')}>Mise à jour</Text>
+                <Text  style={styles.menuItem} onPress={()=>navigation.navigate('CGVScreen')}>CGV</Text>
+                <Text  style={styles.menuItem} onPress={handleEmail}>Contact</Text>
+                <Text  style={styles.menuItem} onPress={()=>navigation.navigate('CGUScreen')}>CGU</Text>
                 <Text  style={styles.menuItem} onPress={()=>navigation.navigate('helpScreen')}>Besoin d'aide</Text>
+                <Text  style={styles.menuItem} onPress={()=>navigation.navigate('majScreen')}>Mise à jour</Text>
+                
                 <View style={styles.toggleContainer}>
                     <Text style={styles.notifItemText}>Notifications actives</Text>
                     <Switch

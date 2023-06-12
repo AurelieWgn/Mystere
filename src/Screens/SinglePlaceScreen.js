@@ -41,7 +41,7 @@ export const SinglePlaceScreen = ({route}) =>{
                 </View>
                 <Button
                     onPress={()=>onPressShowGoogleMap()}
-                    title="Voir sur Google Maps"
+                    title="VOIR L'ITINÉRAIRE"
                     color="#773B43"
                     accessibilityLabel="Localisation GPS"
                 />

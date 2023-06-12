@@ -1,7 +1,7 @@
 const MAPPING = [
   {
     id: '7',
-    name: 'Hauts-De-France',
+    name: 'Hauts-de-France',
     shape: 'circle',
     radius: 40,
     x1: '52%',
@@ -21,7 +21,7 @@ const MAPPING = [
   },
   {
     id: '8',
-    name: 'Ile-de-France',
+    name: 'Île-de-France',
     shape: 'circle',
     radius: 25,
     x1: '53%',
@@ -51,7 +51,7 @@ const MAPPING = [
   },
   {
     id: '12',
-    name: 'Pays-De-La-Loire',
+    name: 'Pays-de-la-Loire',
     shape: 'circle',
     radius: 40,
     x1: '24%',
