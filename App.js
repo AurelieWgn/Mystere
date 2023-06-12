@@ -38,7 +38,7 @@ const MainTabNavigation = () => {
         })}       
     >
       <Tab.Screen
-        name="Home"
+        name="Accueil"
         component={HomeScreen}
         options={{
           headerShown: false,
