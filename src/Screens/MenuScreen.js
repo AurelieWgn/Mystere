@@ -47,9 +47,13 @@ export const MenuScreen = () =>{
             <View style={styles.itemsContainer}>
                 <Image source={require('../Img/Mystere_logo.png')} style={styles.logo} />
                 <Text  style={styles.menuItem} onPress={()=>navigation.navigate('mapScreen')}>Carte de France</Text>
-                <Text  style={styles.menuItem} onPress={()=>navigation.navigate('CGVScreen')}>CGV</Text>
+                <View style={styles.inlineCG}>
+                    <Text  style={styles.menuItem} onPress={()=>navigation.navigate('CGVScreen')}>CGV</Text>
+                    <Text style={{color:'#000'}}>-</Text>
+                    <Text  style={styles.menuItem} onPress={()=>navigation.navigate('CGUScreen')}>CGU</Text>
+                </View>
+                <Text  style={styles.menuItem} onPress={()=>navigation.navigate('mentionsScreen')}>Mentions légales</Text>
                 <Text  style={styles.menuItem} onPress={handleEmail}>Contact</Text>
-                <Text  style={styles.menuItem} onPress={()=>navigation.navigate('CGUScreen')}>CGU</Text>
                 <Text  style={styles.menuItem} onPress={()=>navigation.navigate('helpScreen')}>Besoin d'aide</Text>
                 <Text  style={styles.menuItem} onPress={()=>navigation.navigate('majScreen')}>Mise à jour</Text>
                 
@@ -110,5 +114,12 @@ const styles = StyleSheet.create({
         textAlign:'center',
         fontSize:12,
         color: "#595959",
+    },
+    inlineCG:{
+        display:'flex',
+        flexDirection:'row',
+        justifyContent:'center',
+        alignItems: 'center',
+
     }
   })
