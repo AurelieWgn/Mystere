@@ -43,6 +43,7 @@ const styles = StyleSheet.create({
   input: {
     fontSize: 18,
     width: "80%",
+    color: "#000"
     // textTransform: 'lowercase'
   },
 });
