@@ -5,7 +5,7 @@ import {AppContext} from '../Providers/AppProvider';
 import {calculateDistance} from '../Utiles';
 import {URL_WP_IMG} from '../env';
 
-export const PlaceItem = ({data}) =>{
+export const PlaceItem = React.memo(({data}) =>{
     const [state, dispatch] = useContext(AppContext);
     const [distance, setDistance] = useState(null);
     const navigation = useNavigation();
@@ -41,7 +41,7 @@ export const PlaceItem = ({data}) =>{
             </View>
         </TouchableOpacity>
     )
-}
+})
 
 const styles = StyleSheet.create({
     container: {

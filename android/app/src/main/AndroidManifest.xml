@@ -40,7 +40,7 @@
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
-            <data android:scheme="mystere"  android:host="deeplink"/>
+            <!-- <data android:scheme="mystere"  android:host="deeplink"/> -->
         </intent-filter>
       </activity>
 

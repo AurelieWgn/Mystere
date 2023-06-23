@@ -85,6 +85,11 @@ export const SearchScreen = () =>{
         setFilteredPlaces(placesBetween);
     }
 
+    renderItem = ({item}) =>{
+        return <PlaceItem data={item}/> 
+    }
+    
+
     return (
         <View style={styles.container}>
             <SearchBar 
@@ -121,7 +126,7 @@ export const SearchScreen = () =>{
                 
                     <FlatList
                         data={filteredPlaces}
-                        renderItem={({item}) => <PlaceItem data={item}/> }
+                        renderItem={renderItem}
                         keyExtractor={(item, id) => item.id}
                         // ListHeaderComponent={()=>   }
                     />

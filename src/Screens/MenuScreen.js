@@ -1,5 +1,5 @@
 import React from 'react';
-import { Text, View, StyleSheet, Image, Switch } from 'react-native';
+import { Text, View, StyleSheet, Image, Switch, Linking } from 'react-native';
 import {ScreenContainer } from '../Components/ScreenContainer';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,25 +9,29 @@ export const MenuScreen = () =>{
     const navigation = useNavigation();
     const [isEnabled, setIsEnabled] = React.useState(false);
     const toggleSwitch = async () => {
-        setIsEnabled(!isEnabled)
-        await AsyncStorage.setItem('notifications_status', `${!isEnabled}`)
-        if(!isEnabled === false)
+        const newValue = !isEnabled
+        console.log('toggleSwitch newValue', newValue)
+        setIsEnabled(newValue)
+        await AsyncStorage.setItem('notifications_status', `${newValue}`)
+        if(newValue === false)
             await stopStask();
         else
            backgroundTaskIsRunning() ? null : await startStask();
     };
 
-    React.useEffect(()=>{
-        const initToggle = async () =>{     
-            try {
-                const notifiactionsStatus = await AsyncStorage.getItem('notifications_status');
-                if(notifiactionsStatus){
-                    setIsEnabled(JSON.parse(notifiactionsStatus))
-                }
-            } catch (e) {
-                console.log("[Menu] --> Can't update notifications_status by menu toggle")
+     const initToggle = async () =>{     
+        try {
+            const notifiactionsStatus = await AsyncStorage.getItem('notifications_status');
+            console.log('notifiactionsStatus', notifiactionsStatus)
+            if(notifiactionsStatus){
+                setIsEnabled(JSON.parse(notifiactionsStatus))
             }
-        };
+        } catch (e) {
+            console.log("[Menu] --> Can't update notifications_status by menu toggle")
+        }
+    };
+
+    React.useEffect(()=>{
         initToggle();
     }, [])
 
@@ -63,7 +67,7 @@ export const MenuScreen = () =>{
                         trackColor={{ false: "#767577", true: "#767577" }}
                         thumbColor={isEnabled ? "black" : "#f4f3f4"}
                         ios_backgroundColor="#3e3e3e"
-                        onValueChange={toggleSwitch}
+                        onValueChange={()=>toggleSwitch()}
                         value={isEnabled}
                     />
                 </View>

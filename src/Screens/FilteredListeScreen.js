@@ -87,14 +87,18 @@ export const FilteredListeScreen = ({route}) =>{
         }
     })
 
+    renderItem = ({item}) =>{
+        return <PlaceItem data={item}/> 
+    }
+
     return (
         <View style={styles.container}>
             {
                 isLoading ? <View style={styles.loaderContainer}><ActivityIndicator size="large" color="#FFF"/></View>: 
                 state.filteredPlaces.length > 0  ?
                     <FlatList
-                        data={state.filteredPlaces}
-                        renderItem={({item}) => <PlaceItem data={item}/> }
+                        data={state.filteredPlaces.reverse()}
+                        renderItem={renderItem}
                         keyExtractor={(item, id) => id}
                     /> 
                 : <Text style={{color:"#FFF", fontSize:16, textAlign:'center', padding:20}}>Il n'y à pas encore de lieux dans cette région ...</Text>

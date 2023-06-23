@@ -6,7 +6,7 @@ import { useNavigation } from '@react-navigation/native';
 import {URL_WP_IMG} from '../env';
 import LocationIconWithAddres from './Icons/LocationIconWithAddres';
 
-export const PlaceItemFullWidth = ({data, name}) =>{
+export const PlaceItemFullWidth = React.memo(({data, name}) =>{
     const [state, dispatch] = useContext(AppContext);
     const [distance, setDistance] = useState(null);
     const navigation = useNavigation();
@@ -41,7 +41,7 @@ export const PlaceItemFullWidth = ({data, name}) =>{
             </View>
         </TouchableOpacity>
     )
-}
+})
 
 const styles = StyleSheet.create({
     distance: {

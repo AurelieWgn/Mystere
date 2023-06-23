@@ -81,6 +81,10 @@ export const HomeScreen = () =>{
       }),
     [navigation]
   );
+
+    renderItem = ({item}) =>{
+        return <PlaceItemFullWidth data={item}/> 
+    }
     
     return (
         <View style={styles.container}>
@@ -92,7 +96,7 @@ export const HomeScreen = () =>{
                     <FlatList
                      ListHeaderComponent={()=>   <Text style={styles.title}>Lieux à découvrir ou redécouvrir</Text>}
                         data={randomPlaces}
-                        renderItem={({item}) => <PlaceItemFullWidth data={item}/> }
+                        renderItem={renderItem}
                         keyExtractor={(item, id) => id}
                     />
             }

@@ -122,31 +122,31 @@ const MainTabNavigation = () => {
 const App = () => {
   const [state, dispatch] = useContext(AppContext);
 
-  React.useEffect(() => {
-    const startBackgroundService = async () => {
-       try {
-            const notifiactionsStatus = await AsyncStorage.getItem('notifications_status');
+  // React.useEffect(() => {
+  //   const startBackgroundService = async () => {
+  //      try {
+  //           const notifiactionsStatus = await AsyncStorage.getItem('notifications_status');
     
-            if(notifiactionsStatus == null){
-              await AsyncStorage.setItem('notifications_status', 'true');
-              if(!backgroundTaskIsRunning()){
-                await startStask();  
-              }
-            }
-            else{
-               if(!backgroundTaskIsRunning() && JSON.parse(notifiactionsStatus)){
-                await startStask();   
-              }
-              else if(backgroundTaskIsRunning() && !JSON.parse(notifiactionsStatus)){
-                await stopStask();  
-              } 
-            }
-        } catch (e) {
-            console.log("[App] --> Can't set notifications_status to true", e)
-        } 
-    };
-    startBackgroundService();
-  }, []);
+  //           if(notifiactionsStatus == null){
+  //             await AsyncStorage.setItem('notifications_status', 'true');
+  //             if(!backgroundTaskIsRunning()){
+  //               await startStask();  
+  //             }
+  //           }
+  //           else{
+  //              if(!backgroundTaskIsRunning() && JSON.parse(notifiactionsStatus)){
+  //               await startStask();   
+  //             }
+  //             else if(backgroundTaskIsRunning() && !JSON.parse(notifiactionsStatus)){
+  //               await stopStask();  
+  //             } 
+  //           }
+  //       } catch (e) {
+  //           console.log("[App] --> Can't set notifications_status to true", e)
+  //       } 
+  //   };
+  //   startBackgroundService();
+  // }, []);
 
 
   const initLocation = async() =>{
@@ -174,6 +174,10 @@ const App = () => {
         };
 
   }
+
+  // const disableNotifications = async () =>{
+  //    await AsyncStorage.setItem('notifications_status', `false`)
+  // }
 
   
   useEffect(()=>{
