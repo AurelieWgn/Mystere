@@ -1,6 +1,6 @@
 import React from 'react';
 import { ScreenContainer } from "../Components/ScreenContainer"
-import { Text, ScrollView, StyleSheet, View } from 'react-native';
+import { Text, ScrollView, StyleSheet, View, TouchableOpacity, Linking } from 'react-native';
 
 
 export const CGUScreen = () =>{
@@ -15,8 +15,12 @@ export const CGUScreen = () =>{
                             Préambule
                         </Text>
                         <Text style={styles.paragraph}>
-                            Les présentes « conditions générales d’utilisation » ont pour objet l’encadrement juridique de l’application Mystère, gérée par l'auto-entreprise Locus et son utilisation par l’utilisateur. Les conditions générales d’utilisation doivent être acceptées par tout utilisateur souhaitant accéder à l’application. Elles constituent le contrat entre l’Application et l’Utilisateur. L’accès à l’Application par l’utilisateur signifie son acceptation des présentes conditions générales d’utilisation. Éventuellement, en cas de non-acceptation des conditions générales d’utilisation stipulées dans le présent contrat, l’utilisateur se doit de renoncer à l’accès au service proposé par l’application. L’entreprise se réserve le droit de modifier unilatéralement et à tout moment le contenu des présentes conditions générales d’utilisation.
+                            Les présentes « conditions générales d’utilisation » ont pour objet l’encadrement juridique de l’application Mystère, gérée par l'auto-entreprise Locus et son utilisation par l’utilisateur.
+                            Les conditions générales d’utilisation doivent être acceptées par tout utilisateur souhaitant accéder à l’application. Elles constituent le contrat entre l’Application et l’Utilisateur. L’accès à l’Application par l’utilisateur signifie son acceptation des présentes conditions générales d’utilisation.
+                            Éventuellement, en cas de non-acceptation des conditions générales d’utilisation stipulées dans le présent contrat, l’utilisateur se doit de renoncer à l’accès au service proposé par l’application.
                         </Text>
+
+                        <Text style={styles.paragraph}>Retrouvez l'enssemble les conditions d'utilisation de l'application Mystère en suivant  <TouchableOpacity onPress={ ()=>{Linking.openURL('https://docdro.id/LHSTT0U')}}><Text style={{textDecorationLine: 'underline', color:'#FFF', fontWeight:'bold'}}>ce lien</Text></TouchableOpacity> </Text>
 
                         <Text style={styles.heading}>Article 1 - L’application propose à l’utilisateur:</Text>
                         <Text style={styles.listItem}>L'Application « Mystère » inclut les fonctionnalités suivantes:</Text>
@@ -24,14 +28,10 @@ export const CGUScreen = () =>{
                         <Text style={styles.listItem}>- Recherche géographique par région via la carte des départements métropolitains.</Text>
                         <Text style={styles.listItem}>- Recherche d’un lieu précis par mot clé via la fonction « rechercher »</Text>
                         <Text style={styles.listItem}>- Dans menu, l'alerte à proximité d'un lieu via « notification »</Text>
-                        <Text style={styles.paragraph}>
-                            L’entreprise se réserve la possibilité d’apporter des modifications à la présente application sans toutefois porter atteinte à ses fonctionnalités.
-                        </Text>
+                        <Text style={styles.paragraph}>L’entreprise se réserve la possibilité d’apporter des modifications à la présente application sans toutefois porter atteinte à ses fonctionnalités.</Text>
 
                         <Text style={styles.heading}>Article 2 - L'accès aux services:</Text>
-                        <Text style={styles.paragraph}>
-                            L’application fonctionne exclusivement sur les smartphones équipés d'un système d'exploitation Android doté de la fonction localisation (GPS).
-                        </Text>
+                        <Text style={styles.paragraph}> L’application fonctionne exclusivement sur les smartphones équipés d'un système d'exploitation Android doté de la fonction localisation (GPS).</Text>
                         <Text style={styles.paragraph}>
                             L’application est téléchargeable sur le Play Store de Google, un compte client chez le fournisseur de l'application est nécessaire.
                         </Text>
@@ -68,18 +68,65 @@ appmystere@gmail.com
                         </Text>
 
 
-                        <Text style={styles.heading}>Article 3 - Données personnelles:</Text>
+                        <Text style={styles.heading}>Article 3 - Règles de confidentialité:</Text>
+                        <Text style={styles.heading}>Données personnelles</Text>
 
 
-                        <Text style={styles.paragraph}> La confidentialité des informations personnelles de nos utilisateurs est très importante pour nous et nous faisons
-tout notre possible pour la préserver, c’est pourquoi nous garantissons un niveau de protection des données
-conforme aux normes en vigueur en France. </Text>
-      <Text style={styles.paragraph}>  L'application Mystère ne détient aucune donnée personnelle relative à ses utilisateurs (nom, prénom, adresse,
-numéro de téléphone, date de naissance, photo, localisation précise). </Text>
-      <Text style={styles.paragraph}>  L'application Mystère n'utilise aucun pixel de site tiers à des fins statistiques et de mesures d’audience. </Text>
-      <Text style={styles.paragraph}>  L'application Mystère utilise des outils et services de Google, régis par leurs propres conditions d’utilisation. </Text>
+                        <Text style={styles.paragraph}>Soucieuse de la protection de votre vie privée, l'application Mystère s’engage à assurer le meilleur niveau de protection de vos données personnelles conformément à la loi Informatique et libertés nᵒ 78-17 du 6 janvier 1978 modifiée par l'article 33 de la loi n° 2022-52 du 24 janvier 2022.
+Notre politique de protection de la vie privée vous permet d’en savoir plus sur la collecte et le traitement de vos données personnelles par l'application Mystère ainsi que sur vos droits.
+Vous pouvez consulter la liste des traitements vous concernant ci dessous, ou nous adresser un courrier à l’adresse suivante : Mystère 137 rue grande 14290 Orbec, ou par e-mail à l’adresse suivante : appmystere@gmail.com
+Pour mieux connaître vos droits et vos devoirs, vous pouvez également consulter le site de la Commission Nationale de l’Informatique et des Libertés www.cnil.fr  </Text>
+
+                          <Text style={styles.heading}>Identité du responsable du traitement</Text>
+
+                    <Text style={styles.paragraph}>Les données personnelles sont collectées par: {'\n'}
+                    L'auto entreprise Locus immatriculée au RCS de Lisieux sous le n° 953 022 019 
+                    SIRET: 95302201900012 adresse 137 Rue Grande 14290 Orbec
+                    </Text>
 
 
+                <Text style={styles.heading}>Les traitements relatifs à vos données personnelles</Text>
+                <Text style={styles.paragraphBold}>Quelles données ? </Text>
+
+                <Text style={styles.paragraph}>En utilisant les Services proposés sur l’application mobile Mystère (ci-après désignée « l’application »), vous acceptez la collecte, l’utilisation et le transfert de vos données personnelles dans les limites et le cadre définis ci-après.
+                    Nous ne collectons aucun donné relatif à vos listes de contacts, noms, prénoms, numéros de téléphones, adresses postales, adresse électronique mais également aucune donnée sur vos origines raciale ou ethnique, ou vos opinions politiques, philosophiques ou religieuses ou votre appartenance syndicale, ou qui sont relatives à votre santé ou à votre vie sexuelle à des fins commerciales ou pour le compte de tiers.
+                    Par ailleurs, avec votre consentement, l’application Mystère collecte est traite des données de localisation de manière sécurisée et anonyme pour le bon fonctionnement du service (localisation approximatif, recherche d’itinéraires, notifications.) des données de géolocalisation sont également demandées lors de l’utilisation de l’application, et lorsque celle-ci est en veille (en fonction des choix que vous aurez exprimé dans le menu). Les données ainsi collectées ont pour objet essentiel d’assurer le bon fonctionnement de nos services. 
+                    Si vous autorisez cette collecte de données de géolocalisation, vous pouvez changer d’avis après coup, vous aurez toujours la possibilité de vous y opposer en modifiant les paramètres de votre terminal. 
+                </Text>
+
+              <Text style={styles.paragraphBold}>Quand ?</Text>
+              <Text style={styles.paragraph}>Nous collectons vos données notamment quand :</Text>
+                <Text style={styles.listItem}>Vous naviguez sur l’application.  </Text>
+                 <Text style={styles.listItem}>L’application est en veille.</Text>
+
+               <Text style={styles.paragraphBold}>Quelles finalités ?</Text>
+              <Text style={styles.paragraph}>Nous utilisons vos données personnelles pour:</Text>
+                <Text style={styles.listItem}>vous permettre d’utiliser l’application et les fonctionnalités associées (localisation approximatif, recherche d’itinéraires, notifications) </Text>
+
+               <Text style={styles.paragraphBold}>Quelle durée de conservation ?</Text>
+                <Text style={styles.listItem}>Vos données de localisation ne sont pas conservées par l'application Mystère.</Text>
+                <Text style={styles.listItem}>Les informations concernant votre navigation sont anonymes et ne sont pas conservées par l'application Mystère.</Text>
+
+
+               <Text style={styles.paragraphBold}>Quels destinataires ?</Text>
+              <Text style={styles.listItem}>Les données collectées sur l’application Mystère sont exclusivement destinées à l’application Mystère.</Text>
+
+              <Text style={styles.paragraphBold}>Quels sont vos droits ?</Text>
+               <Text style={styles.paragraph}>Collecte de vos données de géolocalisation.
+Sur Android : Vous pouvez désactivez la géolocalisation dans vos paramètres, ou sur l'écran d’accueil avec un simple balayage vers le bas de votre écran en cliquant sur l’icône correspondant. Si vous activez ce paramétrage, l’application ne sera plus en mesure d'utiliser vos données de géolocalisation. 
+Vous pouvez également autoriser ou refuser le traitement de vos données de localisation par l’application Mystère, en vous rendant dans les Paramètres de vos applications. Vous pourrez alors déterminer les finalités pour lesquelles vous autorisez la collecte de vos données.
+Vous avez également le droit de faire une réclamation à notre encontre auprès des autorités voir Article 8.
+</Text>
+
+<Text style={styles.paragraphBold}>Vues immersives</Text>
+<Text style={styles.paragraph}>Conformément à la loi Informatique et Libertés du 6 janvier 1978 modifiée, vous pouvez nous signaler un contenu inapproprié ou nous demander de « flouter » une image si vous arrivez à vous reconnaître ou à reconnaître un membre de votre famille. Par ailleurs, tout résident, locataire ou propriétaire, lorsqu’il est seul occupant d’un immeuble ou d’une maison ainsi que l’ensemble des copropriétaires d’un immeuble peuvent demander la suppression d’une vue immersive de cet immeuble ou maison sous réserve de fournir un justificatif de domicile.
+Vous pouvez exercer les droits décrits ci-dessus en utilisant l'adresse e-mail suivante appmystere@gmail.com ou en écrivant à Mystère – Réclamation, 137 rue grande 14290 Orbec, en nous indiquant la localisation exacte de la prise de vue.</Text>
+
+
+<Text style={styles.paragraphBold}>Les Notifications</Text>
+<Text style={styles.paragraph}>Par défaut, notre l’application est paramétrée pour vous donner le choix d'accepter ou non les notifications. Néanmoins, vous pouvez à tout moment décider de ne pas voir s’afficher ces notifications.
+L'utilisation de la fonctionnalité notification de l'application nécessite le consentement préalable de l'utilisateur. Pour cela, l'utilisateur doit autoriser l'application "Mystère" à lui envoyer des notifications. Cette fonctionnalité peut à tout moment être désactivée ou activée dans le Menu de l’application.
+ En autorisant les "notifications", l'utilisateur peut recevoir des messages (sous forme de texte) à caractère informatif, même si l'application est fermée.</Text>
 
                         <Text style={styles.heading}>Article 4 - Propriété intellectuelle:</Text>
 
@@ -113,9 +160,6 @@ d’applications mobiles exploités par des tiers auxquels l’utilisateur accé
   <Text style={styles.paragraph}> L’entreprise n’endosse aucune responsabilité au titre des contenus, publicités, produits et/ou services disponibles
 sur de tels sites et applications mobiles tiers dont il est rappelé qu’ils sont régis par des conditions d’utilisation qui
 leurs sont propres.</Text>
-
-
-
 
                         <Text style={styles.heading}>Article 7 - Durée des services, désinstallation:</Text>
 
@@ -153,22 +197,14 @@ propres conditions d’utilisation.</Text>
 
                         <Text style={styles.paragraph}>Les photographies et descriptions présentes sur l’application n’ont aucun caractère contractuel.</Text>
 
-
-
-                        <Text style={styles.heading}>Article 11 - Les notifications:</Text>
+                        <Text style={styles.heading}>Article  11 – Cookies:</Text>
                         
                         <Text style={styles.paragraph}>
-                            L'utilisation de la fonctionnalité notification de l'application nécessite le consentement préalable de l'utilisateur. Pour
-cela, l'utilisateur doit autoriser l'application "Mystère" à lui envoyer des notifications.
-                        </Text>
-                        <Text style={styles.paragraph}>
-                            En autorisant les "notifications", l'utilisateur peut recevoir des messages (sous forme de texte) à caractère
-informatif, même si l'application est fermée.
+                           L'application Mystère n'utilise aucun pixel de site tiers à des fins statistiques et de mesures d’audience.
                         </Text>
                         
-
     
-
+                        <Text style={styles.paragraphBold}>Ces informations ont été publiées le 17 juillet 2023.</Text>
     
                 </View>
             </ScrollView>
@@ -192,6 +228,11 @@ const styles = StyleSheet.create({
   paragraph: {
     marginBottom: 12,
     color: '#FFF',
+  },
+  paragraphBold:{
+    marginBottom: 12,
+    color: '#FFF',
+    fontWeight: 'bold'
   },
   heading: {
     fontSize: 16,

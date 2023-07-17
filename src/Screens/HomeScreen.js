@@ -1,6 +1,6 @@
 
 import React, { useEffect, useContext, useState } from 'react';
-import { Text, View, StyleSheet, FlatList} from 'react-native';
+import { Text, View, StyleSheet, FlatList, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import GeolocationSvc from '../Services/GeolocationSvc';
 import Geolocation from 'react-native-geolocation-service';
@@ -12,6 +12,7 @@ export const HomeScreen = () =>{
     const [state, dispatch] = useContext(AppContext);
     const [locationPermission, setLocationPermission] = useState(false);
     const [randomPlaces, setRandom] = useState([]);
+    const [hasSeenAlertMessage, sethasSeenAlertMessage] = useState(false);
     const locationSvc = new GeolocationSvc();
     const navigation = useNavigation();
 
@@ -48,13 +49,31 @@ export const HomeScreen = () =>{
     }
 
     useEffect(()=>{
-        if(!locationPermission){
+        if(!hasSeenAlertMessage && !locationPermission && !state.userLocation){
+             Alert.alert(
+            'Collecte des données de localisation',
+            "L'application Mystère collecte des données de localisation pour permettre l'identification des lieux à proximité de votre position.",
+                [
+                    {
+                        text: "j\'ai compris",
+                        onPress: () => sethasSeenAlertMessage(true),
+                
+                    },
+                ],
+        
+            );
+        }
+       
+    },[])
+
+    useEffect(()=>{
+        if(!locationPermission && hasSeenAlertMessage){
             getLocationPermition();
         }
-        if(!state.userLocation && locationPermission){
+        if(!state.userLocation && locationPermission && hasSeenAlertMessage){
             initLocation()
         }
-    }, [locationPermission])
+    }, [locationPermission, hasSeenAlertMessage])
     
     useEffect(()=>{
         const numberOfPlaces = 5;
