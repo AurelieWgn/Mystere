@@ -20,7 +20,7 @@ export const CGUScreen = () =>{
                             Éventuellement, en cas de non-acceptation des conditions générales d’utilisation stipulées dans le présent contrat, l’utilisateur se doit de renoncer à l’accès au service proposé par l’application.
                         </Text>
 
-                        <Text style={styles.paragraph}>Retrouvez l'enssemble les conditions d'utilisation de l'application Mystère en suivant  <TouchableOpacity onPress={ ()=>{Linking.openURL('https://docdro.id/LHSTT0U')}}><Text style={{textDecorationLine: 'underline', color:'#FFF', fontWeight:'bold'}}>ce lien</Text></TouchableOpacity> </Text>
+                        <Text style={styles.paragraph}>Retrouvez l'ensemble des conditions générales d'utilisation de l'application Mystère en suivant: <TouchableOpacity onPress={ ()=>{Linking.openURL('https://docdro.id/LHSTT0U')}}><Text style={{textDecorationLine: 'underline', color:'#FFF', fontWeight:'bold'}}>ce lien</Text></TouchableOpacity> </Text>
 
                         <Text style={styles.heading}>Article 1 - L’application propose à l’utilisateur:</Text>
                         <Text style={styles.listItem}>L'Application « Mystère » inclut les fonctionnalités suivantes:</Text>
