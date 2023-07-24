@@ -1,6 +1,6 @@
-import React, {useEffect, useContext} from 'react';
+import React, {useEffect, useContext, useState} from 'react';
 import {useNavigation} from '@react-navigation/native';
-import {View, Image, Text} from 'react-native';
+import {View, Image, Text, Alert} from 'react-native';
 import {StyleSheet} from 'react-native';
 import {ProgressBar} from '@react-native-community/progress-bar-android';
 import {AppContext} from '../Providers/AppProvider';
@@ -32,12 +32,13 @@ const styles = StyleSheet.create({
 export const SplashScreen = () => {
   const navigation = useNavigation();
   const [state, dispatch] = useContext(AppContext);
+   const [hasSeenAlertMessage, sethasSeenAlertMessage] = useState(false);
 
   //Init all places in AsyncStorage and in local storage (Provider)
   useEffect(() => {
     async function loadPosts() {
       try {
-        const response = await fetch(API_URL_ALL_PLACES,);
+        const response = await fetch(API_URL_ALL_PLACES);
         const places = await response.json();
         dispatch({type: 'INIT_ALL_PLACES', places: places});
         storePlacesData(JSON.stringify(places));
@@ -47,7 +48,20 @@ export const SplashScreen = () => {
       }
     
       setTimeout(() => {
-        navigation.navigate('MainHome');
+        // Afficher popUp puis redirect 
+          Alert.alert(
+            'Collecte des données de localisation',
+            "L’application Mystère collecte des données de localisation en arrière-plan pour la localisation approximative, la recherche d’itinéraires et les notifications même lorsque l'application est fermée ou non utilisée.",
+                [
+                    {
+                        text: "j\'ai compris",
+                        onPress: () => {  
+                          sethasSeenAlertMessage(true)
+                          navigation.navigate('MainHome');
+                      },
+                    },
+                ],
+            );
       }, 5000);
     }
     loadPosts();

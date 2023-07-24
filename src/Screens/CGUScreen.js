@@ -45,8 +45,7 @@ export const CGUScreen = () =>{
                             Tous les frais supportés par l’utilisateur pour accéder au service (matériel informatique, logiciels, connexion Internet, etc.) sont à sa charge.
                         </Text>
                         <Text style={styles.paragraph}>
-                            L’entreprise met en œuvre tous les moyens mis à sa disposition pour assurer un accès de qualité à ses services,
-l'accès étant fourni par un hébergeur indépendant, l’entreprise
+                            L’entreprise met en œuvre tous les moyens mis à sa disposition pour assurer un accès de qualité à ses services, l'accès étant fourni par un hébergeur indépendant, l’entreprise n’engage pas sa responsabilité de ce fait.
                         </Text>
                         <Text style={styles.paragraph}>
                            Tout événement dû à un cas de force majeure ayant pour conséquence un dysfonctionnement du réseau ou du
