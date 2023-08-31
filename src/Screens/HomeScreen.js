@@ -27,7 +27,6 @@ export const HomeScreen = () =>{
       
             Geolocation.getCurrentPosition(
               (data) => {
-                console.log('data', data)
                 pos = {longitude: data.coords.longitude, latitude: data.coords.latitude};
                 // return { status: true, pos};
                 dispatch({type: "UPDATE_USER_LOCATION", location: pos})

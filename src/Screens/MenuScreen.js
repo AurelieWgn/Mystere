@@ -10,7 +10,6 @@ export const MenuScreen = () =>{
     const [isEnabled, setIsEnabled] = React.useState(false);
     const toggleSwitch = async () => {
         const newValue = !isEnabled
-        console.log('toggleSwitch newValue', newValue)
         setIsEnabled(newValue)
         await AsyncStorage.setItem('notifications_status', `${newValue}`)
         if(newValue === false)

@@ -87,14 +87,18 @@ const emptyNotifiedPlacesFormAsyncStorage = async()=>{
         await AsyncStorage.removeItem('notified_places');
       }
       else{
+        const twoDaysAgo = moment().subtract(2, 'days');
         if(moment(lastDelete).isBefore(twoDaysAgo)){
            await AsyncStorage.removeItem('notified_places');
            await AsyncStorage.setItem('lastStorageDelete', moment().toString());
         }
+        else{
+          console.log('do not save again')
+        }
       }
       
     } catch (e) {
-      console.log("[Utiles] --> emptyNotifiedPlacesFormAsyncStorage")
+      console.log("[Utiles] --> emptyNotifiedPlacesFormAsyncStorage", e)
     }
   }
 

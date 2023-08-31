@@ -1,5 +1,5 @@
 import React, {useEffect, useContext} from 'react';
-import { StyleSheet, Image, View } from 'react-native';
+import { StyleSheet, Image } from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {HomeScreen} from './src/Screens/HomeScreen';
@@ -18,8 +18,7 @@ import 'react-native-gesture-handler';
 import Geolocation from 'react-native-geolocation-service';
 import {AppContext} from './src/Providers/AppProvider';
 import {MenuIcon} from "./src/Components/MenuIcon";
-import {emptyNotifiedPlacesFormAsyncStorage, stopStask, startStask, backgroundTaskIsRunning} from './src/Utiles';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {emptyNotifiedPlacesFormAsyncStorage} from './src/Utiles';
 import { CGVScreen } from './src/Screens/CGVScreen';
 import { CGUScreen } from './src/Screens/CGUScreen';
 

@@ -6,6 +6,7 @@ import {ProgressBar} from '@react-native-community/progress-bar-android';
 import {AppContext} from '../Providers/AppProvider';
 import {storePlacesData} from '../Utiles';
 import {API_URL_ALL_PLACES} from '../env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const styles = StyleSheet.create({
   container: {
@@ -32,11 +33,11 @@ const styles = StyleSheet.create({
 export const SplashScreen = () => {
   const navigation = useNavigation();
   const [state, dispatch] = useContext(AppContext);
-   const [hasSeenAlertMessage, sethasSeenAlertMessage] = useState(false);
 
   //Init all places in AsyncStorage and in local storage (Provider)
   useEffect(() => {
     async function loadPosts() {
+      const hasSeenAlertMessageInfo =  await AsyncStorage.getItem('hasSeenAlertMessage');
       try {
         const response = await fetch(API_URL_ALL_PLACES);
         const places = await response.json();
@@ -47,7 +48,8 @@ export const SplashScreen = () => {
         console.log('splashScreen Fetch places err :', err);
       }
     
-      setTimeout(() => {
+      if(!hasSeenAlertMessageInfo){
+        setTimeout(() => {
         // Afficher popUp puis redirect 
           Alert.alert(
             'Collecte des données de localisation',
@@ -55,14 +57,19 @@ export const SplashScreen = () => {
                 [
                     {
                         text: "j\'ai compris",
-                        onPress: () => {  
-                          sethasSeenAlertMessage(true)
+                        onPress: async () => {  
+                          await AsyncStorage.setItem('hasSeenAlertMessage', `true`)
                           navigation.navigate('MainHome');
                       },
                     },
                 ],
             );
       }, 5000);
+      }
+      else{
+        navigation.navigate('MainHome');
+      }
+      
     }
     loadPosts();
   }, []);

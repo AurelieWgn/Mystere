@@ -27,7 +27,6 @@
     "react-native-geolocation-service": "^5.3.0-beta.4",
     "react-native-gesture-handler": "^2.5.0",
     "react-native-job-queue": "^0.5.0",
-    "react-native-notifications": "^4.3.5",
     "react-native-permissions": "^3.3.0",
     "react-native-push-notification": "^8.1.1",
     "react-native-radio-buttons-group": "^2.2.11",
