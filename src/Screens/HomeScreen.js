@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import GeolocationSvc from '../Services/GeolocationSvc';
 import Geolocation from 'react-native-geolocation-service';
 import {AppContext} from '../Providers/AppProvider';
-import { getRandomItem} from '../Utiles';
+import { deleteStockedNotificationForLater, getRandomItem, getStockedNotificationForLater} from '../Utiles';
 import {PlaceItemFullWidth} from '../Components/PlaceItemFullWidth'
 
 export const HomeScreen = () =>{
@@ -89,15 +89,24 @@ export const HomeScreen = () =>{
     },[state.places])
 
     useEffect(
-    () =>
-      navigation.addListener('beforeRemove', (e) => {
-       
-        // Prevent default behavior of leaving the screen
-        e.preventDefault();
+        () =>
+        navigation.addListener('beforeRemove', (e) => {
+        
+            // Prevent default behavior of leaving the screen
+            e.preventDefault();
 
-      }),
-    [navigation]
-  );
+        }),
+        [navigation]
+    );
+
+    useEffect(()=>{
+        // used when the application is killed and user open the notification
+        getStockedNotificationForLater().then((stockedNotification)=>{
+            if(stockedNotification){
+                navigation.navigate('SinglePlaceScreen', { name: stockedNotification.name, placeId: stockedNotification.id })
+            }
+        })
+    })
 
     renderItem = ({item}) =>{
         return <PlaceItemFullWidth data={item}/> 

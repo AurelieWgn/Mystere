@@ -1,14 +1,18 @@
+import { createNavigationContainerRef, useNavigation } from "@react-navigation/native";
 import PushNotification from "react-native-push-notification";
+import { refNavigate } from "./RefNavigationService";
 class PushNotificationSvc {
+  
   constructor() {
+    
     PushNotification.configure({
     
       onRegister: function () {
         // console.log('TOKEN:', token);
       },
+      // not called if app is killed.
       onNotification: function (notification) {
-        console.log('NOTIFICATION:', notification);
-       
+        refNavigate('SinglePlaceScreen', { name: notification.data.name, placeId: notification.data.id });
       },
       popInitialNotification: false,
       // requestPermissions: true,
@@ -36,6 +40,7 @@ class PushNotificationSvc {
       title: `${place.name}`,
       message: "Vous êtes proche d'un lieu mystère, décourez le !",
       date: new Date,
+      data: place
     });
   }
 }

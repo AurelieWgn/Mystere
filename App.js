@@ -21,6 +21,7 @@ import {MenuIcon} from "./src/Components/MenuIcon";
 import {emptyNotifiedPlacesFormAsyncStorage} from './src/Utiles';
 import { CGVScreen } from './src/Screens/CGVScreen';
 import { CGUScreen } from './src/Screens/CGUScreen';
+import { navigationRef } from './src/Services/RefNavigationService';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -185,7 +186,7 @@ const App = () => {
   }, [])
 
   return (
-    <NavigationContainer>
+    <NavigationContainer ref={navigationRef}>
       <Stack.Navigator initialRouteName="SplashScreen">
         <Stack.Screen
           name="SplashScreen"

@@ -1,7 +1,7 @@
 import PushNotificationSvc from "../Services/NotificationSvc";
 import Geolocation from 'react-native-geolocation-service';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {calculateDistance, getNotifiedPlaces, updateNotifiedPlaces} from '../Utiles';
+import {calculateDistance, getNotifiedPlaces, stockNotificationForLater, updateNotifiedPlaces} from '../Utiles';
 import {findNearest} from 'geolib';
 
 const findCloserPlaceEndSendNotif = async (userLocation) => {
@@ -14,6 +14,7 @@ const findCloserPlaceEndSendNotif = async (userLocation) => {
     const isPlaceHasAlreadyNotified = notifiedPlaces.find(id => id == closestPlace.id);
     if(!isPlaceHasAlreadyNotified){
       await updateNotifiedPlaces(notifiedPlaces.concat([closestPlace.id]));
+      await stockNotificationForLater(closestPlace);
       PushNotificationSvc.schduleNotification(closestPlace);
     }
   }

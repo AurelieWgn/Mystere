@@ -48,6 +48,32 @@ const updateNotifiedPlaces = async (value) =>{
   }
 }
 
+const stockNotificationForLater =  async (value) =>{
+  console.group('-------- stockNotificationForLater ---------')
+  try {
+    await AsyncStorage.setItem('stocked_notification', JSON.stringify(value));
+  } catch (e) {
+    console.log("[Utiles] --> Can't set stocked_notification")
+  }
+}
+
+const getStockedNotificationForLater =  async () =>{
+  try {
+    const notifdata = await AsyncStorage.getItem('stocked_notification');
+    return JSON.parse(notifdata)
+  } catch (e) {
+    console.log("[Utiles] --> Can't get stocked_notification")
+  }
+}
+
+const deleteStockedNotificationForLater = async (value) =>{
+  try {
+    await AsyncStorage.removeItem('stocked_notification');
+  } catch (e) {
+    console.log("[Utiles] --> Can't delete stocked_notification")
+  }
+}
+
 const getRandomItem = (arr) => {
     const randomIndex = Math.floor(Math.random() * arr.length);
     const item = arr[randomIndex];
@@ -156,5 +182,8 @@ export {
   emptyNotifiedPlacesFormAsyncStorage,
   startStask,
   stopStask,
-  backgroundTaskIsRunning
+  backgroundTaskIsRunning,
+  stockNotificationForLater,
+  getStockedNotificationForLater,
+  deleteStockedNotificationForLater
 }

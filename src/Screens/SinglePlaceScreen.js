@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useState } from 'react';
 import { Text, View, StyleSheet, Image, Button, Linking, ScrollView } from 'react-native';
 import {AppContext} from '../Providers/AppProvider';
-import {calculateDistance} from '../Utiles';
+import {calculateDistance, deleteStockedNotificationForLater, getStockedNotificationForLater} from '../Utiles';
 import {URL_WP_IMG} from '../env';
 import LocationIconWithAddres from '../Components/Icons/LocationIconWithAddres';
 
@@ -22,6 +22,14 @@ export const SinglePlaceScreen = ({route}) =>{
             setDistance(distance);
         }  
     }, [])
+
+    useEffect(()=>{
+        getStockedNotificationForLater().then((stockedNotification)=>{
+            if(stockedNotification){
+                 deleteStockedNotificationForLater()
+            }
+        })
+    })
 
     const onPressShowGoogleMap = () =>{
         const scheme = Platform.OS === 'ios' ? 'maps:' : 'geo:';

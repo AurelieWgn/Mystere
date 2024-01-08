@@ -1,27 +1,32 @@
 import React from 'react';
-import { Text, View, StyleSheet, Image, Switch, Linking } from 'react-native';
+import { Text, View, StyleSheet, Image, Switch, Linking, Button } from 'react-native';
 import {ScreenContainer } from '../Components/ScreenContainer';
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {stopStask, startStask, backgroundTaskIsRunning} from '../Utiles';
+import {stopStask, startStask, backgroundTaskIsRunning, stockNotificationForLater} from '../Utiles';
+import PushNotificationSvc from "../Services/NotificationSvc";
 
 export const MenuScreen = () =>{
     const navigation = useNavigation();
     const [isEnabled, setIsEnabled] = React.useState(false);
+
     const toggleSwitch = async () => {
         const newValue = !isEnabled
-        setIsEnabled(newValue)
-        await AsyncStorage.setItem('notifications_status', `${newValue}`)
-        if(newValue === false)
+        if(newValue){            
+            setIsEnabled(newValue) // true
+            await AsyncStorage.setItem('notifications_status', `${newValue}`)
+            backgroundTaskIsRunning() ? null : await startStask(); 
+        }
+        else {
+            setIsEnabled(newValue) // false
+            await AsyncStorage.setItem('notifications_status', `${newValue}`)
             await stopStask();
-        else
-           backgroundTaskIsRunning() ? null : await startStask();
+        }
     };
 
      const initToggle = async () =>{     
         try {
             const notifiactionsStatus = await AsyncStorage.getItem('notifications_status');
-            console.log('notifiactionsStatus', notifiactionsStatus)
             if(notifiactionsStatus){
                 setIsEnabled(JSON.parse(notifiactionsStatus))
             }
@@ -44,6 +49,12 @@ export const MenuScreen = () =>{
             console.error('Failed to open mail client:', error);
             });
     };
+
+    const sendFakeTestNotif = async () => {
+        const fakePlace = {"addres": "1 Avenue du Colonel Henri Rol Tanguy, 75014 Paris", "coords": {"latitude": "48.8337", "longitude": "2.3323"}, "description": "Les catacombes de Paris, sont situées à Paris dans le département de Paris en région Île de France. Le plus grand ossuaire souterrain du monde, ce lieu mystérieux fait partie des monuments incontournables de la capitale.", "id": "1055", "img": "Les-Catacombes-de-Paris-01.jpg", "latitude": "48.8337", "longitude": "2.3323", "name": "Les Catacombes de Paris", "region": "8"}
+        await stockNotificationForLater(fakePlace);
+        PushNotificationSvc.schduleNotification(fakePlace);
+    }
 
     return (
         <ScreenContainer>
@@ -71,6 +82,16 @@ export const MenuScreen = () =>{
                     />
                 </View>
                 <Text style={styles.notifItemSubText}>Activez les notifications pour recevoir des alertes lorsque vous passez à proximité d'un lieu intéressent.</Text>
+               {/* For dev only */}
+                {/* {
+                     <Button
+                        onPress={()=>sendFakeTestNotif()}
+                        title="SEND NOTIF"
+                        color="#773B43"
+                        accessibilityLabel="send notif"
+                    />
+                } */}
+           
             </View>
         </ScreenContainer>
    
