@@ -5,7 +5,7 @@ import {useNavigation} from '@react-navigation/native';
 import GeolocationSvc from '../Services/GeolocationSvc';
 import Geolocation from 'react-native-geolocation-service';
 import {AppContext} from '../Providers/AppProvider';
-import { deleteStockedNotificationForLater, getRandomItem, getStockedNotificationForLater} from '../Utiles';
+import { getRandomItem, getStockedNotificationForLater} from '../Utiles';
 import {PlaceItemFullWidth} from '../Components/PlaceItemFullWidth'
 
 export const HomeScreen = () =>{
@@ -47,22 +47,6 @@ export const HomeScreen = () =>{
         };
     }
 
-    // useEffect(()=>{
-    //     if(!hasSeenAlertMessage && !locationPermission && !state.userLocation){
-    //          Alert.alert(
-    //         'Collecte des données de localisation',
-    //         "L’application Mystère collecte des données de localisation en arrière-plan pour la localisation approximative, la recherche d’itinéraires et les notifications même lorsque l'application est fermée ou non utilisée.",
-    //             [
-    //                 {
-    //                     text: "j\'ai compris",
-    //                     onPress: () => sethasSeenAlertMessage(true),
-                
-    //                 },
-    //             ],
-        
-    //         );
-    //     }
-    // },[])
 
     useEffect(()=>{
         if(!locationPermission && hasSeenAlertMessage){
