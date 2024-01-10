@@ -152,7 +152,7 @@ const options = {
     color: '#ff00ff',
     linkingURI: 'mystery://',
     parameters: {
-        delay: 900000, // 15min
+        delay: 900000, // 15min 
     },
 };
 

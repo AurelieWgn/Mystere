@@ -9,6 +9,10 @@ const findCloserPlaceEndSendNotif = async (userLocation) => {
   const closestPlace = userLocation ? findNearest(userLocation, JSON.parse(places)) : null;
   const isCloserEnough = closestPlace ? calculateDistance(userLocation, closestPlace.coords) < 50 : null;
 
+  // const fakePlace = {"addres": "1 Avenue du Colonel Henri Rol Tanguy, 75014 Paris", "coords": {"latitude": "48.8337", "longitude": "2.3323"}, "description": "Les catacombes de Paris, sont situées à Paris dans le département de Paris en région Île de France. Le plus grand ossuaire souterrain du monde, ce lieu mystérieux fait partie des monuments incontournables de la capitale.", "id": "1055", "img": "Les-Catacombes-de-Paris-01.jpg", "latitude": "48.8337", "longitude": "2.3323", "name": "Les Catacombes de Paris", "region": "8"}
+  // await stockNotificationForLater(closestPlace);
+  // PushNotificationSvc.schduleNotification(fakePlace);
+
   if(isCloserEnough){
     const notifiedPlaces = await getNotifiedPlaces();
     const isPlaceHasAlreadyNotified = notifiedPlaces.find(id => id == closestPlace.id);

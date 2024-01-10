@@ -1,6 +1,7 @@
 import React from 'react';
 import { ScreenContainer } from "../Components/ScreenContainer"
-import { Text, ScrollView, StyleSheet, View } from 'react-native';
+import { Text, ScrollView, StyleSheet, View, Linking, TouchableOpacity } from 'react-native';
+
 
 
 export const CGVScreen = () =>{
@@ -62,17 +63,15 @@ puisse en garantir une pérennité absolue.
 
                         <Text style={styles.heading}>Article 3 - Remboursement:</Text>
 
+                        <Text style={styles.paragraph}>Le remboursement de l’acquisition de la présente application ne pourra être consenti que dans les conditions prévues à la rubrique visée à cet effet accessible au lien suivant: 
+                          <TouchableOpacity onPress={()=>{Linking.openURL('https://support.google.com/googleplay/answer/7659581?ctx=dj.mixer.pro&visit_id=638167273709963015-3160763323&p=details_refundpolicy&rd=1&fbclid=IwAR2xVOXVZN1ato5ySeLggH6dQq6zqz4nKY0_8zW2fgprmT-UMbp0Q6htYZ4#zippy=%2Capplications-et-jeux-sur-google-play')}}>
+                            <Text style={{textDecorationLine: 'underline', color:'#FFF', fontWeight:'bold'}}>
+                              Conditions de remboursement
+                            </Text>
+                          </TouchableOpacity> 
+                        </Text>
 
-                        <Text style={styles.paragraph}> La confidentialité des informations personnelles de nos utilisateurs est très importante pour nous et nous faisons
-tout notre possible pour la préserver, c’est pourquoi nous garantissons un niveau de protection des données
-conforme aux normes en vigueur en France. </Text>
-      <Text style={styles.paragraph}>  L'application Mystère ne détient aucune donnée personnelle relative à ses utilisateurs (nom, prénom, adresse,
-numéro de téléphone, date de naissance, photo, localisation précise). </Text>
-      <Text style={styles.paragraph}>  L'application Mystère n'utilise aucun pixel de site tiers à des fins statistiques et de mesures d’audience. </Text>
-      <Text style={styles.paragraph}>  L'application Mystère utilise des outils et services de Google, régis par leurs propres conditions d’utilisation. </Text>
-
-
-
+                      
                         <Text style={styles.heading}>Article 4 - Prix et Conditions de paiement:</Text>
 
                         <Text style={styles.paragraph}>Les prix sont ceux en vigueur sur le Site et/ou sur l'Application Play Store au jour de la validation de la commande. </Text>

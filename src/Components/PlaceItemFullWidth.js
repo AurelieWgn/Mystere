@@ -10,6 +10,10 @@ export const PlaceItemFullWidth = React.memo(({data, name}) =>{
     const [state, dispatch] = useContext(AppContext);
     const [distance, setDistance] = useState(null);
     const navigation = useNavigation();
+
+    if(!data){
+        return null
+    }
  
     const onPress = (id, name) => {
         navigation.navigate('SinglePlaceScreen', { name: name, placeId: id })
@@ -22,6 +26,8 @@ export const PlaceItemFullWidth = React.memo(({data, name}) =>{
         }
             
     }, [state.userLocation])
+
+   
 
     const Image_Http_URL = data && data.img ? { uri: `${URL_WP_IMG}${data.img}`} : null;    
     return (
