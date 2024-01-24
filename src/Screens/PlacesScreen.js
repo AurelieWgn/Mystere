@@ -36,14 +36,14 @@ export const PlacesScreen = () => {
         id: 'all',
         label: 'Tout',
         value: 'all',
-        color: '#FFFFFF',
+        color: '#FFF',
         size: 14,
       },
       {
         id: 'distance',
         label: 'Filtrer par distance',
         value: 'distance',
-        color: '#FFFFFF',
+        color: '#FFF',
         size: 14,
       },
     ],
@@ -157,7 +157,7 @@ export const PlacesScreen = () => {
         onPress={onPressRadioButton}
         layout="row"
         selectedId={selectedRadioDistanceBtn}
-        labelStyle={{color: ' #FFFFFF'}}
+        labelStyle={{color: '#FFF'}}
         containerStyle={{marginBottom: 10}}
       />
       {state.userLocation && selectedRadioDistanceBtn === 'distance' ? (

@@ -18,3 +18,7 @@ OR To generate Aab
 - run :  `./gradlew bundleRelease`
 - Find the Aab file in : 
 
+
+
+// node 18 : nvm use 18
+// Java 17 : export JAVA_HOME=`/usr/libexec/java_home -v 17`
