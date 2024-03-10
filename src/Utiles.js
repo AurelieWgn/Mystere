@@ -89,6 +89,11 @@ const getNearestPlaces = (position, places) => {
   return placesLessThen50;
 };
 
+const orderPlaceByDistance = (position, places) => {
+  const orderedPlaces = orderByDistance(position, places);
+  return orderedPlaces;
+};
+
 const getPlacesBetween = (position, places, distance) => {
   const placesBewteen = places.filter(
     places => calculateDistance(position, places.coords) <= distance,
@@ -152,4 +157,5 @@ export {
   stockNotificationForLater,
   getStockedNotificationForLater,
   deleteStockedNotificationForLater,
+  orderPlaceByDistance,
 };

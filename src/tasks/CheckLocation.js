@@ -4,30 +4,30 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   calculateDistance,
   getNotifiedPlaces,
+  orderPlaceByDistance,
   stockNotificationForLater,
   updateNotifiedPlaces,
 } from '../Utiles';
-import {findNearest} from 'geolib';
 
 const findCloserPlaceEndSendNotif = async userLocation => {
-  const places = await AsyncStorage.getItem('stored_places');
-  const closestPlace = userLocation
-    ? findNearest(userLocation, JSON.parse(places))
-    : null;
-  const isCloserEnough = closestPlace
-    ? calculateDistance(userLocation, closestPlace.coords) < 50
-    : null;
-
-  //Only for dev
-  // PushNotificationSvc.schduleNotification(fakePlace);
-  // await stockNotificationForLater(closestPlace);
-
-  if (isCloserEnough) {
+  console.log('findCloserPlaceEndSendNotif');
+  try {
+    const placesString = await AsyncStorage.getItem('stored_places');
+    const places = JSON.parse(placesString) || [];
+    const sortedPlaces = orderPlaceByDistance(userLocation, places);
     const notifiedPlaces = await getNotifiedPlaces();
-    const isPlaceHasAlreadyNotified = notifiedPlaces.find(
-      id => id == closestPlace.id,
-    );
-    if (!isPlaceHasAlreadyNotified) {
+
+    // Trouver le premier lieu non notifié qui est assez proche
+    const closestPlace = sortedPlaces.find(place => {
+      const isCloserEnough = calculateDistance(userLocation, place.coords) < 50;
+
+      const isNotNotifiedYet = !notifiedPlaces.includes(place.id);
+      return isCloserEnough && isNotNotifiedYet;
+    });
+    console.log('closestPlace', closestPlace);
+
+    if (closestPlace) {
+      console.log('closestPlace');
       try {
         await updateNotifiedPlaces(notifiedPlaces.concat([closestPlace.id]));
         await stockNotificationForLater(closestPlace);
@@ -36,6 +36,8 @@ const findCloserPlaceEndSendNotif = async userLocation => {
         console.log('CheckLocation.js, can not send notification :', error);
       }
     }
+  } catch (error) {
+    console.log('findCloserPlaceEndSendNotif err : ', error);
   }
 };
 

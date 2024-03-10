@@ -7,12 +7,10 @@ import {
   Switch,
   Linking,
   Alert,
-  Button,
 } from 'react-native';
 import {ScreenContainer} from '../Components/ScreenContainer';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {stockNotificationForLater} from '../Utiles';
 import {
   stopStask,
   checkPermissionAndStartTask,
@@ -117,11 +115,7 @@ export const MenuScreen = () => {
           source={require('../Img/Mystere_logo.png')}
           style={styles.logo}
         />
-        <Text
-          style={styles.menuItem}
-          onPress={() => navigation.navigate('mapScreen')}>
-          Carte de France
-        </Text>
+
         <View style={styles.inlineCG}>
           <Text
             style={styles.menuItem}
@@ -148,11 +142,11 @@ export const MenuScreen = () => {
           onPress={() => navigation.navigate('helpScreen')}>
           Besoin d'aide
         </Text>
-        <Text
+        {/* <Text
           style={styles.menuItem}
           onPress={() => navigation.navigate('majScreen')}>
           Mises à jour
-        </Text>
+        </Text> */}
 
         <View style={styles.toggleContainer}>
           <Text style={styles.notifItemText}>Notifications actives</Text>

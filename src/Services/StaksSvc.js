@@ -46,7 +46,6 @@ const checkPermissionAndStartTask = async () => {
     }
   }
 
-  console.log('checkPermissionAndStartTask');
   // Vérifier si la plateforme est Android et la version est >= 31
   if (Platform.OS === 'android' && Platform.Version >= 31) {
     try {
@@ -87,16 +86,18 @@ const backgroundTaskIsRunning = () => {
   return BackgroundService.isRunning();
 };
 
-const sleep = time => new Promise(resolve => setTimeout(() => resolve(), time));
+// const sleep = time => new Promise(resolve => setTimeout(() => resolve(), time));
 
 const notificationsTask = async taskDataArguments => {
   const {delay} = taskDataArguments;
-  await new Promise(async resolve => {
-    for (let i = 0; BackgroundService.isRunning(); i++) {
-      locationAndNotificationTask();
-      await sleep(delay);
-    }
-  });
-};
 
+  const executeTask = async () => {
+    if (BackgroundService.isRunning()) {
+      await locationAndNotificationTask();
+      setTimeout(executeTask, delay);
+    }
+  };
+
+  executeTask();
+};
 export {checkPermissionAndStartTask, stopStask, backgroundTaskIsRunning};

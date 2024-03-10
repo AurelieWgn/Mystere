@@ -9,12 +9,19 @@ class PushNotificationSvc {
       },
       // not called if app is killed.
       onNotification: function (notification) {
+        console.log('onNotification - notification');
         refNavigate('SinglePlaceScreen', {
           name: notification.data.name,
           placeId: notification.data.id,
         });
       },
-      popInitialNotification: false,
+      popInitialNotification: notification => {
+        console.log('Notification initiale');
+        if (notification) {
+          console.log('Notification initiale', notification);
+          // Même logique que dans onNotification pour traiter la notification initiale
+        }
+      },
       // requestPermissions: true,
       requestPermissions: Platform.OS === 'ios',
     });

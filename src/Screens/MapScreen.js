@@ -1,18 +1,25 @@
-import React from 'react';
+import React, {useDebugValue, useEffect} from 'react';
 import {View, Text, StyleSheet} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import ImageMapper from '../Components/Mapper';
 import MAPPING from '../RegionsMap';
 
 const imageSource = require('../Img/Map/Group.png');
 
-
 export const MapScreen = () => {
   const navigation = useNavigation();
+  const route = useRoute();
 
   const onPressRegion = (id, label) => {
-    navigation.navigate('FilteredListeScreen', {regionId: id, regionLabel: label});
+    navigation.navigate('FilteredListeScreen', {
+      regionId: id,
+      regionLabel: label,
+    });
   };
+
+  useEffect(() => {
+    console.log('route', route.name);
+  });
 
   return (
     <View style={styles.container}>
@@ -30,26 +37,25 @@ export const MapScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
+  container: {
     //  flex: 1,
     //  display: 'flex',
     //  flexDirection: 'column',
     //  backgroundColor : '#000',
     //  padding:5
-    },
-    title:{
-        textTransform: 'uppercase',
-        fontSize: 24,
-        fontWeight: '800',
-        color: '#000',
-        textAlign: 'center',
-        padding:20,
-        // paddingBottom: 0,
-    },
-    myCustomStyle: {
-      width: '100%',
-      padding: 10,
-      marginTop: 30,
   },
-})
-
+  title: {
+    textTransform: 'uppercase',
+    fontSize: 24,
+    fontWeight: '800',
+    color: '#000',
+    textAlign: 'center',
+    padding: 20,
+    // paddingBottom: 0,
+  },
+  myCustomStyle: {
+    width: '100%',
+    padding: 10,
+    marginTop: 30,
+  },
+});

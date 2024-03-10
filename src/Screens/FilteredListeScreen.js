@@ -7,97 +7,83 @@ import {
   StyleSheet,
   FlatList,
   ActivityIndicator,
+  Image,
+  Switch,
 } from 'react-native';
 import GeolocationSvc from '../Services/GeolocationSvc';
 import {AppContext} from '../Providers/AppProvider';
 import Geolocation from 'react-native-geolocation-service';
 import {PlaceItem} from '../Components/PlaceItem';
 import {API_URL_ALL_PLACES} from '../env';
+import {orderPlaceByDistance} from '../Utiles';
 
 export const FilteredListeScreen = ({route}) => {
   const [state, dispatch] = useContext(AppContext);
-  const [locationPermission, setLocationPermission] = useState(false);
+  const [locationPermission, setLocationPermission] = useState(false); // Définition de l'état de la permission de localisation
   const [isLoading, setIsLoading] = useState(true);
+  const [isSortedByDistance, setIsSortedByDistance] = useState(false);
   const locationSvc = new GeolocationSvc();
   const {regionId} = route.params;
 
-  const getLocationPermition = async () => {
-    locationSvc.askForGeolocationPermission().then(resp => {
-      setLocationPermission(resp);
-    });
-  };
+  const manageLocationAccess = async () => {
+    const permission = await locationSvc.askForGeolocationPermission();
+    setLocationPermission(permission); // Correction ici pour définir l'état de la permission
 
-  const initLocation = async () => {
-    try {
-      Geolocation.getCurrentPosition(
-        data => {
-          const pos = {
-            longitude: data.coords.longitude,
-            latitude: data.coords.latitude,
-          };
-          dispatch({type: 'UPDATE_USER_LOCATION', location: pos});
-        },
-        error => {
-          // See error code charts below.
-          console.log(error.code, error.message);
-        },
-        {enableHighAccuracy: true},
-      );
-    } catch (error) {
-      console.log('FilteredListeScreen getCurrentLatLong::catcherror =>');
-
-      return {status: false, message: '[MapSvc] Can not get position'};
-    }
-    // await locationSvc.getCurrantLocation().then(async(pos)=>{
-    //     dispatch({type: "UPDATE_USER_LOCATION", location: pos})
-    // });
-  };
-
-  const filterList = liste => {
-    if (liste) {
-      const filteredPlacesByRegion = liste.filter(
-        place => place.region === `${regionId}`,
-      );
-      dispatch({
-        type: 'INIT_FILTERED_PLACES',
-        filteredPlaces: filteredPlacesByRegion,
-      });
+    if (permission && !state.userLocation) {
+      try {
+        Geolocation.getCurrentPosition(
+          position => {
+            const pos = {
+              longitude: position.coords.longitude,
+              latitude: position.coords.latitude,
+            };
+            dispatch({type: 'UPDATE_USER_LOCATION', location: pos});
+          },
+          error => {
+            console.log('Error getting location:', error);
+          },
+          {enableHighAccuracy: true},
+        );
+      } catch (error) {
+        console.log('Error getting location:', error);
+      }
     }
   };
 
   useEffect(() => {
-    dispatch({type: 'INIT_FILTERED_PLACES', filteredPlaces: []});
-    if (state.places.lenght > 0) {
-      filterList(state.places);
-    } else {
-      async function loadPosts() {
+    const fetchData = async () => {
+      if (state.places.length > 0) {
+        filterList(state.places);
+      } else {
         try {
           const response = await fetch(API_URL_ALL_PLACES);
           const places = await response.json();
           filterList(places);
-          dispatch({type: 'INIT_ALL_PLACES', places: places});
+          dispatch({type: 'INIT_ALL_PLACES', places});
         } catch (err) {
-          console.log('FilteredListeScreen full liste fetch : ', err);
+          console.log('Error fetching places:', err);
         }
       }
-      loadPosts().then(() => {
-        setIsLoading(false);
-      });
-    }
-  }, []);
+      setIsLoading(false);
+    };
 
-  useEffect(() => {
-    if (!locationPermission) {
-      getLocationPermition();
-    }
-    if (!state.userLocation) {
-      initLocation();
-    }
-  });
+    fetchData();
+    manageLocationAccess();
+  }, [state.places]); // Ajout de state.places comme dépendance pour recharger si les places changent
 
-  const renderItem = ({item}) => {
-    return <PlaceItem data={item} />;
+  const filterList = liste => {
+    const filteredPlacesByRegion = liste.filter(
+      place => place.region === `${regionId}`,
+    );
+    dispatch({
+      type: 'INIT_FILTERED_PLACES',
+      filteredPlaces: filteredPlacesByRegion,
+    });
   };
+
+  const toggleSort = () => setIsSortedByDistance(prevState => !prevState);
+
+  const renderItem = ({item}) => <PlaceItem data={item} />;
 
   return (
     <View style={styles.container}>
@@ -106,11 +92,35 @@ export const FilteredListeScreen = ({route}) => {
           <ActivityIndicator size="large" color="#FFF" />
         </View>
       ) : state.filteredPlaces.length > 0 ? (
-        <FlatList
-          data={state.filteredPlaces.reverse()}
-          renderItem={renderItem}
-          keyExtractor={(item, id) => id}
-        />
+        <View style={{paddingTop: 55}}>
+          <FlatList
+            data={
+              isSortedByDistance
+                ? orderPlaceByDistance(state.userLocation, state.filteredPlaces)
+                : state.filteredPlaces.reverse()
+            }
+            renderItem={renderItem}
+            keyExtractor={(item, id) => id}
+          />
+          <View style={styles.filterBtn}>
+            <Image
+              source={require('../Img/aleatoire.png')}
+              style={{width: 24, height: 24}}
+            />
+            <Switch
+              trackColor={{false: '#767577', true: '#767577'}}
+              thumbColor={isSortedByDistance ? 'black' : '#f4f3f4'}
+              style={{marginLeft: 5, marginRight: 5}}
+              ios_backgroundColor="#3e3e3e"
+              onValueChange={() => setIsSortedByDistance(!isSortedByDistance)}
+              value={isSortedByDistance}
+            />
+            <Image
+              source={require('../Img/tout-pres-dici.png')}
+              style={{width: 27, height: 27}}
+            />
+          </View>
+        </View>
       ) : (
         <Text
           style={{
@@ -134,5 +144,25 @@ const styles = StyleSheet.create({
   loaderContainer: {
     height: '100%',
     paddingTop: 50,
+  },
+  filterBtn: {
+    width: '100%',
+    position: 'absolute',
+    top: 0,
+    height: 50,
+    paddingRight: 20,
+    backgroundColor: '#FFF',
+    display: 'flex',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#FFF',
+    shadowOffset: {width: 10, height: 10},
+    shadowOpacity: 1,
+    shadowRadius: 20.0,
+    elevation: 9,
+  },
+  filterText: {
+    color: '#000',
   },
 });

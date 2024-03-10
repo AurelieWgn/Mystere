@@ -1,15 +1,6 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable react-native/no-inline-styles */
 import React, {useEffect, useState, useContext, useMemo} from 'react';
-import {
-  Text,
-  View,
-  ImageBackground,
-  StyleSheet,
-  FlatList,
-  Image,
-  TouchableOpacity,
-} from 'react-native';
+import {Text, View, StyleSheet, FlatList} from 'react-native';
 import SearchBar from '../Components/SearchBar';
 import {getPlacesBetween} from '../Utiles';
 import {PlaceItem} from '../Components/PlaceItem';
@@ -21,10 +12,9 @@ import Geolocation from 'react-native-geolocation-service';
 
 export const PlacesScreen = () => {
   const [state, dispatch] = useContext(AppContext);
-  const [filteredPlaces, setFilteredPlaces] = useState(state.places);
-  const [maxDistanceValue, setMaxDistanceValue] = useState(50);
   const [searchPhrase, setSearchPhrase] = useState('');
-  const [radioButtons, setRadioButtons] = useState(filterRadioButtonsData);
+  const [maxDistanceValue, setMaxDistanceValue] = useState(50);
+  const [filteredPlaces, setFilteredPlaces] = useState(state.places || []); // Ajout de cette ligne pour définir filteredPlaces
   const [selectedRadioDistanceBtn, setSelectedRadioDistanceBtn] =
     useState('all');
   const [locationPermission, setLocationPermission] = useState(false);
@@ -32,16 +22,10 @@ export const PlacesScreen = () => {
 
   const filterRadioButtonsData = useMemo(
     () => [
-      {
-        id: 'all',
-        label: 'Tout',
-        value: 'all',
-        color: '#FFF',
-        size: 14,
-      },
+      {id: 'all', label: 'Tout', value: 'all', color: '#FFF', size: 14},
       {
         id: 'distance',
-        label: 'Filtrer par distance',
+        label: 'Filtrer par limite de distance',
         value: 'distance',
         color: '#FFF',
         size: 14,
@@ -51,36 +35,22 @@ export const PlacesScreen = () => {
   );
 
   useEffect(() => {
-    setMaxDistanceValue(500);
-    setFilteredPlaces(state.places);
-  }, []);
+    getLocationPermission();
+  }, [
+    searchPhrase,
+    maxDistanceValue,
+    state.userLocation,
+    selectedRadioDistanceBtn,
+    state.places,
+  ]);
 
-  useEffect(() => {
-    executeFiltering();
-  }, [searchPhrase, maxDistanceValue]);
-
-  useEffect(() => {
-    if (state.userLocation) {
-      executeFiltering();
-    }
-  }, [state.userLocation]);
-
-  useEffect(() => {}, [filteredPlaces]);
-
-  const getLocationPermition = async () => {
-    locationSvc.askForGeolocationPermission().then(resp => {
-      setLocationPermission(resp);
-    });
-  };
-
-  useEffect(() => {
-    if (!locationPermission) {
-      getLocationPermition();
-    }
-    if (!state.userLocation && locationPermission) {
+  const getLocationPermission = async () => {
+    const resp = await locationSvc.askForGeolocationPermission();
+    setLocationPermission(resp);
+    if (resp && !state.userLocation) {
       initLocation();
     }
-  }, [locationPermission]);
+  };
 
   const initLocation = async () => {
     try {
@@ -90,60 +60,62 @@ export const PlacesScreen = () => {
             longitude: data.coords.longitude,
             latitude: data.coords.latitude,
           };
-          // return { status: true, pos};
           dispatch({type: 'UPDATE_USER_LOCATION', location: pos});
         },
         error => {
-          // See error code charts below.
-          console.log(error.code, error.message);
+          console.log('HomeScreen getCurrentLatLong::catcherror =>', error);
         },
         {enableHighAccuracy: true},
       );
     } catch (error) {
       console.log('HomeScreen getCurrentLatLong::catcherror =>', error);
-      return {status: false, message: '[MapSvc] Can not get position'};
     }
   };
-  const handleResetSearchValue = () => {
-    setSearchPhrase('');
-    setFilteredPlaces(state.places);
-  };
 
-  const onChangeSliderDistance = newDistance => {
-    setMaxDistanceValue(Math.round(newDistance));
-  };
-
-  const onPressRadioButton = value => {
-    setSelectedRadioDistanceBtn(value);
-    value === 'all' ? setMaxDistanceValue(500) : setMaxDistanceValue(50);
-  };
-
-  const executeFiltering = () => {
+  useEffect(() => {
     const dataToDistanceFilter =
       searchPhrase.length > 2
         ? state.places.filter(
-            places =>
-              places.name.toLowerCase().includes(searchPhrase.toLowerCase()) ||
-              places.description
+            place =>
+              place.name.toLowerCase().includes(searchPhrase.toLowerCase()) ||
+              place.description
                 .toLowerCase()
                 .includes(searchPhrase.toLowerCase()),
           )
         : state.places;
 
     const placesBetween =
-      maxDistanceValue === 500
+      selectedRadioDistanceBtn === 'all' || maxDistanceValue === 500
         ? dataToDistanceFilter
         : getPlacesBetween(
             state.userLocation,
             dataToDistanceFilter,
             maxDistanceValue,
           );
+
     setFilteredPlaces(placesBetween);
+  }, [
+    searchPhrase,
+    maxDistanceValue,
+    state.userLocation,
+    selectedRadioDistanceBtn,
+    state.places,
+  ]); // Cette dépendance manquait
+
+  const handleResetSearchValue = () => {
+    setSearchPhrase('');
   };
 
-  const renderItem = ({item}) => {
-    return <PlaceItem data={item} />;
+  const onChangeSliderDistance = newDistance => {
+    setMaxDistanceValue(Math.round(newDistance));
   };
+
+  const onPressRadioButton = val => {
+    setSelectedRadioDistanceBtn(val);
+    setMaxDistanceValue(val === 'all' ? 500 : 50);
+  };
+
+  const renderItem = ({item}) => <PlaceItem data={item} />;
 
   return (
     <View style={styles.container}>
@@ -160,12 +132,12 @@ export const PlacesScreen = () => {
         labelStyle={{color: '#FFF'}}
         containerStyle={{marginBottom: 10}}
       />
-      {state.userLocation && selectedRadioDistanceBtn === 'distance' ? (
+      {state.userLocation && selectedRadioDistanceBtn === 'distance' && (
         <View style={styles.sliderContainer}>
           <Slider
-            style={{width: '100%', height: 40, color: '#FFF'}}
+            style={{width: '100%', height: 40}}
             minimumValue={50}
-            maximumValue={+500}
+            maximumValue={500}
             minimumTrackTintColor="#53e1ca"
             maximumTrackTintColor="#FFF"
             thumbTintColor="#53e1ca"
@@ -177,23 +149,17 @@ export const PlacesScreen = () => {
             {maxDistanceValue} Kms
           </Text>
         </View>
-      ) : null}
-
+      )}
       {filteredPlaces.length > 0 ? (
         <FlatList
-          data={filteredPlaces}
+          data={filteredPlaces.reverse()}
           renderItem={renderItem}
           keyExtractor={(item, id) => item.id}
         />
       ) : (
-        <>
-          {(searchPhrase != '' && searchPhrase.length > 2) ||
-          filteredPlaces.length < 1 ? (
-            <Text style={styles.distanceText}>
-              Votre recherche ne permet pas de vous proposer de lieux ...
-            </Text>
-          ) : null}
-        </>
+        <Text style={styles.noResultsText}>
+          Votre recherche ne permet pas de vous proposer de lieux...
+        </Text>
       )}
     </View>
   );
