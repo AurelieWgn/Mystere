@@ -97,10 +97,16 @@ export const FilteredListeScreen = ({route}) => {
             data={
               isSortedByDistance
                 ? orderPlaceByDistance(state.userLocation, state.filteredPlaces)
-                : state.filteredPlaces.reverse()
+                : state.filteredPlaces
+                    .map(value => ({value, sort: Math.random()}))
+                    .sort((a, b) => a.sort - b.sort)
+                    .map(({value}) => value)
             }
             renderItem={renderItem}
-            keyExtractor={(item, id) => id}
+            keyExtractor={item => item.id.toString()}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            windowSize={5}
           />
           <View style={styles.filterBtn}>
             <Image

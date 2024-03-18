@@ -1,8 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useState, useContext, useMemo} from 'react';
-import {Text, View, StyleSheet, FlatList} from 'react-native';
+import {
+  Text,
+  View,
+  StyleSheet,
+  FlatList,
+  ActivityIndicator,
+} from 'react-native';
 import SearchBar from '../Components/SearchBar';
-import {getPlacesBetween} from '../Utiles';
+import {getPlacesBetween, orderPlaceByDistance} from '../Utiles';
 import {PlaceItem} from '../Components/PlaceItem';
 import {AppContext} from '../Providers/AppProvider';
 import Slider from '@react-native-community/slider';
@@ -14,11 +20,12 @@ export const PlacesScreen = () => {
   const [state, dispatch] = useContext(AppContext);
   const [searchPhrase, setSearchPhrase] = useState('');
   const [maxDistanceValue, setMaxDistanceValue] = useState(50);
-  const [filteredPlaces, setFilteredPlaces] = useState(state.places || []); // Ajout de cette ligne pour définir filteredPlaces
+  const [filteredPlaces, setFilteredPlaces] = useState([]);
   const [selectedRadioDistanceBtn, setSelectedRadioDistanceBtn] =
     useState('all');
   const [locationPermission, setLocationPermission] = useState(false);
   const locationSvc = new GeolocationSvc();
+  const [isLoading, setIsLoading] = useState(true);
 
   const filterRadioButtonsData = useMemo(
     () => [
@@ -84,23 +91,32 @@ export const PlacesScreen = () => {
           )
         : state.places;
 
-    const placesBetween =
-      selectedRadioDistanceBtn === 'all' || maxDistanceValue === 500
-        ? dataToDistanceFilter
-        : getPlacesBetween(
-            state.userLocation,
-            dataToDistanceFilter,
-            maxDistanceValue,
-          );
+    let placesBetween = [];
 
+    if (selectedRadioDistanceBtn === 'all') {
+      // For All : Random liste
+      placesBetween = dataToDistanceFilter
+        .map(value => ({value, sort: Math.random()}))
+        .sort((a, b) => a.sort - b.sort)
+        .map(({value}) => value);
+    } else {
+      // For distance limite = The farthest at the top
+      const liste = getPlacesBetween(
+        state.userLocation,
+        dataToDistanceFilter,
+        maxDistanceValue,
+      );
+      placesBetween = orderPlaceByDistance(state.userLocation, liste).reverse();
+    }
     setFilteredPlaces(placesBetween);
+    setIsLoading(false);
   }, [
     searchPhrase,
     maxDistanceValue,
     state.userLocation,
     selectedRadioDistanceBtn,
     state.places,
-  ]); // Cette dépendance manquait
+  ]);
 
   const handleResetSearchValue = () => {
     setSearchPhrase('');
@@ -111,11 +127,13 @@ export const PlacesScreen = () => {
   };
 
   const onPressRadioButton = val => {
+    setIsLoading(true);
     setSelectedRadioDistanceBtn(val);
     setMaxDistanceValue(val === 'all' ? 500 : 50);
   };
+  const PlaceItemMemo = React.memo(PlaceItem);
 
-  const renderItem = ({item}) => <PlaceItem data={item} />;
+  const renderItem = ({item}) => <PlaceItemMemo data={item} />;
 
   return (
     <View style={styles.container}>
@@ -151,11 +169,20 @@ export const PlacesScreen = () => {
         </View>
       )}
       {filteredPlaces.length > 0 ? (
-        <FlatList
-          data={filteredPlaces.reverse()}
-          renderItem={renderItem}
-          keyExtractor={(item, id) => item.id}
-        />
+        isLoading ? (
+          <View style={styles.loaderContainer}>
+            <ActivityIndicator size="large" color="#FFF" />
+          </View>
+        ) : (
+          <FlatList
+            data={filteredPlaces}
+            renderItem={renderItem}
+            keyExtractor={item => item.id.toString()}
+            initialNumToRender={10}
+            maxToRenderPerBatch={10}
+            windowSize={5}
+          />
+        )
       ) : (
         <Text style={styles.noResultsText}>
           Votre recherche ne permet pas de vous proposer de lieux...
@@ -170,6 +197,10 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#000',
     padding: 5,
+  },
+  loaderContainer: {
+    height: '100%',
+    paddingTop: 50,
   },
   title: {
     textTransform: 'uppercase',
