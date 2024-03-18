@@ -86,18 +86,16 @@ const backgroundTaskIsRunning = () => {
   return BackgroundService.isRunning();
 };
 
-// const sleep = time => new Promise(resolve => setTimeout(() => resolve(), time));
+const sleep = time => new Promise(resolve => setTimeout(() => resolve(), time));
 
 const notificationsTask = async taskDataArguments => {
   const {delay} = taskDataArguments;
-
-  const executeTask = async () => {
-    if (BackgroundService.isRunning()) {
-      await locationAndNotificationTask();
-      setTimeout(executeTask, delay);
+  await new Promise(async resolve => {
+    for (let i = 0; BackgroundService.isRunning(); i++) {
+      locationAndNotificationTask();
+      await sleep(delay);
     }
-  };
-
-  executeTask();
+  });
 };
+
 export {checkPermissionAndStartTask, stopStask, backgroundTaskIsRunning};
