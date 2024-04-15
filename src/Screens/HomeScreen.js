@@ -1,16 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unstable-nested-components */
 import React, {useEffect, useContext, useState} from 'react';
-import {Text, View, StyleSheet, FlatList, Alert} from 'react-native';
-import {useNavigation, useRoute} from '@react-navigation/native';
+import {Text, View, StyleSheet, FlatList} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 import GeolocationSvc from '../Services/GeolocationSvc';
 import Geolocation from 'react-native-geolocation-service';
 import {AppContext} from '../Providers/AppProvider';
-import {getRandomItem, getStockedNotificationForLater} from '../Utiles';
+import {getRandomItem} from '../Utiles';
 import {PlaceItemFullWidth} from '../Components/PlaceItemFullWidth';
 import {FloatingButton} from '../Components/FloatingButton';
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useNotifService} from '../Hooks/useNotifications';
 
 export const HomeScreen = () => {
   const [state, dispatch] = useContext(AppContext);
@@ -21,7 +21,7 @@ export const HomeScreen = () => {
     useState(false);
   const locationSvc = new GeolocationSvc();
   const navigation = useNavigation();
-  const route = useRoute();
+  const notifSvc = useNotifService();
 
   const hasSeenIconNotification = async () => {
     return await AsyncStorage.getItem('hasSeenNotificationIconAlert');
@@ -108,14 +108,7 @@ export const HomeScreen = () => {
 
   useEffect(() => {
     // used when the application is killed and user open the notification
-    getStockedNotificationForLater().then(stockedNotification => {
-      if (stockedNotification) {
-        navigation.navigate('SinglePlaceScreen', {
-          name: stockedNotification.name,
-          placeId: stockedNotification.id,
-        });
-      }
-    });
+    notifSvc.navigateToTheNotifiedBackgroundPlace();
   }, []);
 
   useEffect(() => {

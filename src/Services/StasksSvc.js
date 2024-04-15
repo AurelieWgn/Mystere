@@ -1,5 +1,5 @@
 import BackgroundService from 'react-native-background-actions';
-import {locationAndNotificationTask} from '../../src/tasks/CheckLocation';
+import {locationAndNotificationTask} from '../tasks/CheckLocation';
 const {AlarmModule} = NativeModules;
 import {NativeModules, Platform, PermissionsAndroid} from 'react-native';
 

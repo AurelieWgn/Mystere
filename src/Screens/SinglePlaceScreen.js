@@ -8,7 +8,6 @@ import {
   Button,
   Linking,
   ScrollView,
-  Platform,
 } from 'react-native';
 import {AppContext} from '../Providers/AppProvider';
 import {
@@ -49,9 +48,6 @@ export const SinglePlaceScreen = ({route}) => {
   });
 
   const onPressShowGoogleMap = () => {
-    // const scheme = Platform.OS === 'ios' ? 'maps:' : 'geo:';
-    console.log('userLocation', state.userLocation);
-
     const url = state.userLocation
       ? `https://www.google.com/maps/dir/?api=1&origin=${state.userLocation.latitude},${state.userLocation.longitude}&destination=${place.coords.latitude},${place.coords.longitude}&travelmode=driving`
       : `https://www.google.com/maps?q=${place.coords.latitude},${place.coords.longitude}`;

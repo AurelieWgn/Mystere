@@ -132,18 +132,6 @@ const emptyNotifiedPlacesFormAsyncStorage = async () => {
   }
 };
 
-const sleep = time => new Promise(resolve => setTimeout(() => resolve(), time));
-
-const notificationsTask = async taskDataArguments => {
-  const {delay} = taskDataArguments;
-  await new Promise(async resolve => {
-    for (let i = 0; BackgroundService.isRunning(); i++) {
-      locationAndNotificationTask();
-      await sleep(delay);
-    }
-  });
-};
-
 export {
   calculateDistance,
   storePlacesData,

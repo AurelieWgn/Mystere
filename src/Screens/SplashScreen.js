@@ -37,15 +37,11 @@ export const SplashScreen = () => {
   //Init all places in AsyncStorage and in local storage (Provider)
   useEffect(() => {
     async function loadPosts() {
-      console.log('loadPosts')
       const hasSeenAlertMessageInfo = await AsyncStorage.getItem(
         'hasSeenAlertMessage',
       );
-      console.log('hasSeenAlertMessageInfo', hasSeenAlertMessageInfo)
       try {
-        console.log('try')
         const response = await fetch(API_URL_ALL_PLACES);
-        console.log('response', response)
         const places = await response.json();
         dispatch({type: 'INIT_ALL_PLACES', places: places});
         storePlacesData(JSON.stringify(places));
@@ -54,7 +50,6 @@ export const SplashScreen = () => {
       }
 
       if (!hasSeenAlertMessageInfo) {
-        console.log('coucou');
         setTimeout(() => {
           // Afficher popUp puis redirect
           Alert.alert(
@@ -76,7 +71,7 @@ export const SplashScreen = () => {
       }
     }
     loadPosts();
-  }, []);
+  }, [dispatch, navigation]);
 
   return (
     <View style={styles.container}>

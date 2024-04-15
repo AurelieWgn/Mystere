@@ -23,7 +23,8 @@ import {MenuIcon} from './src/Components/MenuIcon';
 import {emptyNotifiedPlacesFormAsyncStorage} from './src/Utiles';
 import {CGVScreen} from './src/Screens/CGVScreen';
 import {CGUScreen} from './src/Screens/CGUScreen';
-import {navigationRef} from './src/Services/RefNavigationService';
+import {useNotifService} from './src/Hooks/useNotifications';
+import {navigationRef} from './src/Services/RefNavigationSvc';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -116,6 +117,7 @@ const MainTabNavigation = () => {
 
 const App = () => {
   const [state, dispatch] = useContext(AppContext);
+  const notifSvc = useNotifService();
 
   const initLocation = async () => {
     try {
@@ -143,6 +145,11 @@ const App = () => {
   useEffect(() => {
     initLocation();
     emptyNotifiedPlacesFormAsyncStorage();
+  }, []);
+
+  useEffect(() => {
+    // Subscribe to notifications events
+    notifSvc.subscribeForgroundEvents();
   }, []);
 
   return (
@@ -213,24 +220,5 @@ const App = () => {
     </NavigationContainer>
   );
 };
-
-const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-});
 
 export default App;

@@ -11,12 +11,12 @@ import {
 import {ScreenContainer} from '../Components/ScreenContainer';
 import {useNavigation} from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import {
-  stopStask,
-  checkPermissionAndStartTask,
   backgroundTaskIsRunning,
-} from '../Services/StaksSvc';
-import PushNotificationSvc from '../Services/NotificationSvc';
+  checkPermissionAndStartTask,
+  stopStask,
+} from '../Services/StasksSvc';
 
 export const MenuScreen = () => {
   const navigation = useNavigation();
@@ -34,8 +34,6 @@ export const MenuScreen = () => {
             text: "j'ai compris",
             onPress: async () => {
               try {
-                console.log('okay ! ', newValue);
-
                 setIsEnabled(newValue); // true
                 await AsyncStorage.setItem(
                   'notifications_status',
@@ -89,23 +87,6 @@ export const MenuScreen = () => {
     Linking.openURL(mailtoUrl).catch(error => {
       console.error('Failed to open mail client:', error);
     });
-  };
-
-  const sendFakeTestNotif = async () => {
-    const fakePlace = {
-      addres: '1 Avenue du Colonel Henri Rol Tanguy, 75014 Paris',
-      coords: {latitude: '48.8337', longitude: '2.3323'},
-      description:
-        'Les catacombes de Paris, sont situées à Paris dans le département de Paris en région Île de France. Le plus grand ossuaire souterrain du monde, ce lieu mystérieux fait partie des monuments incontournables de la capitale.',
-      id: '1055',
-      img: 'Les-Catacombes-de-Paris-01.jpg',
-      latitude: '48.8337',
-      longitude: '2.3323',
-      name: 'Les Catacombes de Paris',
-      region: '8',
-    };
-    // await stockNotificationForLater(fakePlace);
-    PushNotificationSvc.schduleNotification(fakePlace);
   };
 
   return (
