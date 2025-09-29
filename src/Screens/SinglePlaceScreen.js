@@ -23,11 +23,12 @@ export const SinglePlaceScreen = ({route}) => {
   const {placeId} = route.params;
   const [place, setPlace] = useState({});
   const [distance, setDistance] = useState(null);
-  const [Image_Http_URL, setImage_Http_URL] = useState('');
+  const [Image_Http_URL, setImage_Http_URL] = useState({});
 
   useEffect(() => {
     const selectedPlace = state.places.filter(place => place.id === placeId)[0];
     const Image_url = {uri: `${URL_WP_IMG}${selectedPlace.img}`};
+    console.log('Image_url', Image_url);
     setImage_Http_URL(Image_url);
     setPlace(selectedPlace);
     if (state.userLocation) {
