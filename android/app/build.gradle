@@ -122,7 +122,6 @@ android {
 dependencies {
     // The version of react-native is set by the React Native Gradle Plugin
     implementation("com.facebook.react:react-android")
-    implementation("com.facebook.react:flipper-integration")
     implementation ("androidx.work:work-runtime:2.7.1")
 
     if (hermesEnabled.toBoolean()) {
