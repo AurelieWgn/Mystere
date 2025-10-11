@@ -1,7 +1,7 @@
 import {createContext, useContext} from 'react';
 import NotificationSvc from '../Services/NotificationSvc';
 
-const notifServiceInstance = new NotificationSvc();
-const NotifServiceContext = createContext(notifServiceInstance);
+// Utiliser l'instance singleton exportée
+const NotifServiceContext = createContext(NotificationSvc);
 
 export const useNotifService = () => useContext(NotifServiceContext);

@@ -10,42 +10,33 @@ import {
   Image,
   Switch,
 } from 'react-native';
-import GeolocationSvc from '../Services/GeolocationSvc';
 import {AppContext} from '../Providers/AppProvider';
-import Geolocation from 'react-native-geolocation-service';
+import {useLocationContext} from '../Providers/LocationProvider';
 import {PlaceItem} from '../Components/PlaceItem';
 import {API_URL_ALL_PLACES} from '../env';
 import {orderPlaceByDistance} from '../Utiles';
 
 export const FilteredListeScreen = ({route}) => {
   const [state, dispatch] = useContext(AppContext);
-  const [locationPermission, setLocationPermission] = useState(false); // Définition de l'état de la permission de localisation
   const [isLoading, setIsLoading] = useState(true);
   const [isSortedByDistance, setIsSortedByDistance] = useState(false);
-  const locationSvc = new GeolocationSvc();
   const {regionId} = route.params;
+  
+  const {
+    getCurrentLocation,
+    foregroundPermissionGranted,
+    requestForegroundPermission,
+  } = useLocationContext();
 
   const manageLocationAccess = async () => {
-    const permission = await locationSvc.askForGeolocationPermission();
-    setLocationPermission(permission); // Correction ici pour définir l'état de la permission
+    if (!foregroundPermissionGranted) {
+      await requestForegroundPermission();
+    }
 
-    if (permission && !state.userLocation) {
-      try {
-        Geolocation.getCurrentPosition(
-          position => {
-            const pos = {
-              longitude: position.coords.longitude,
-              latitude: position.coords.latitude,
-            };
-            dispatch({type: 'UPDATE_USER_LOCATION', location: pos});
-          },
-          error => {
-            console.log('Error getting location:', error);
-          },
-          {enableHighAccuracy: true},
-        );
-      } catch (error) {
-        console.log('Error getting location:', error);
+    if (foregroundPermissionGranted && !state.userLocation) {
+      const location = await getCurrentLocation();
+      if (location) {
+        dispatch({type: 'UPDATE_USER_LOCATION', location});
       }
     }
   };

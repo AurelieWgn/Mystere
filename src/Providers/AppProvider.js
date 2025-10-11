@@ -1,9 +1,11 @@
 import React from 'react';
+import {NotificationProvider} from './NotificationProvider';
+import {LocationProvider} from './LocationProvider';
 
 const initialState = {
   places: [],
   filteredPlaces: [],
-  userLocation: null,
+  userLocation: null, // ⚠️ DÉPRÉCIÉ : Utiliser LocationProvider.userLocation à la place
 };
 
 const AppContext = React.createContext();
@@ -17,6 +19,8 @@ const AppReduceur = (state, action) => {
       return newState;
 
     case 'UPDATE_USER_LOCATION':
+      // ⚠️ DÉPRÉCIÉ : Maintenu pour compatibilité
+      // Utiliser LocationProvider.updateUserLocation à la place
       newState.userLocation = action.location;
       return newState;
 
@@ -31,7 +35,11 @@ const AppProvider = ({children}) => {
 
   return (
     <AppContext.Provider value={[state, dispatch]}>
-      {children}
+      <LocationProvider>
+        <NotificationProvider>
+          {children}
+        </NotificationProvider>
+      </LocationProvider>
     </AppContext.Provider>
   );
 };

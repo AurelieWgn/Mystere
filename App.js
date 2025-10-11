@@ -17,7 +17,6 @@ import {MajScreen} from './src/Screens/MajScreen';
 import {ContactScreen} from './src/Screens/ContactScreen';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import 'react-native-gesture-handler';
-import Geolocation from 'react-native-geolocation-service';
 import {AppContext} from './src/Providers/AppProvider';
 import {MenuIcon} from './src/Components/MenuIcon';
 import {emptyNotifiedPlacesFormAsyncStorage} from './src/Utiles';
@@ -25,6 +24,7 @@ import {CGVScreen} from './src/Screens/CGVScreen';
 import {CGUScreen} from './src/Screens/CGUScreen';
 import {useNotifService} from './src/Hooks/useNotifications';
 import {navigationRef} from './src/Services/RefNavigationSvc';
+import {useLocationContext} from './src/Providers/LocationProvider';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -118,27 +118,22 @@ const MainTabNavigation = () => {
 const App = () => {
   const [state, dispatch] = useContext(AppContext);
   const notifSvc = useNotifService();
+  const {getCurrentLocation, updateUserLocation} = useLocationContext();
 
   const initLocation = async () => {
     try {
-      Geolocation.getCurrentPosition(
-        data => {
-          const pos = {
-            longitude: data.coords.longitude,
-            latitude: data.coords.latitude,
-          };
-          // return { status: true, pos};
-          dispatch({type: 'UPDATE_USER_LOCATION', location: pos});
-        },
-        error => {
-          // See error code charts below.
-          console.log(error.code, error.message);
-        },
-        {enableHighAccuracy: true},
-      );
+      // Utiliser le LocationProvider optimisé
+      const location = await getCurrentLocation();
+      
+      if (location) {
+        // Mettre à jour le contexte App pour compatibilité avec le code existant
+        dispatch({type: 'UPDATE_USER_LOCATION', location});
+        console.log('[App] Location initialized:', location);
+      } else {
+        console.warn('[App] Could not get initial location');
+      }
     } catch (error) {
-      console.log('App.js getCurrentLatLong::catcherror =>', error);
-      return {status: false, message: '[MapSvc] Can not get position'};
+      console.error('[App] Error initializing location:', error);
     }
   };
 
@@ -150,7 +145,7 @@ const App = () => {
   useEffect(() => {
     // Subscribe to notifications events
     notifSvc.subscribeForgroundEvents();
-  }, []);
+  }, [notifSvc]);
 
   return (
     <NavigationContainer ref={navigationRef}>

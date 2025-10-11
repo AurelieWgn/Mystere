@@ -10,22 +10,22 @@ import {
 } from 'react-native';
 import {ScreenContainer} from '../Components/ScreenContainer';
 import {useNavigation} from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-import {
-  backgroundTaskIsRunning,
-  checkPermissionAndStartTask,
-  stopStask,
-} from '../Services/StasksSvc';
+import {useNotificationContext} from '../Providers/NotificationProvider';
 
 export const MenuScreen = () => {
   const navigation = useNavigation();
-  const [isEnabled, setIsEnabled] = React.useState(false);
+  const {
+    notificationsEnabled,
+    enableNotifications,
+    disableNotifications,
+    permissionsGranted,
+  } = useNotificationContext();
 
   const toggleSwitch = async () => {
-    const newValue = !isEnabled;
+    const newValue = !notificationsEnabled;
 
     if (newValue) {
+      // Activation des notifications
       Alert.alert(
         'Information notifications',
         "L'application Mystère va vous demander une autorisation pour déclencher les alarmes nécessaires au fonctionnement des notifications, si celle-ci n'est pas déjà autorisée.",
@@ -34,50 +34,37 @@ export const MenuScreen = () => {
             text: "j'ai compris",
             onPress: async () => {
               try {
-                setIsEnabled(newValue); // true
-                await AsyncStorage.setItem(
-                  'notifications_status',
-                  `${newValue}`,
-                );
-                backgroundTaskIsRunning()
-                  ? null
-                  : await checkPermissionAndStartTask();
+                const success = await enableNotifications();
+                if (!success) {
+                  Alert.alert(
+                    'Erreur',
+                    'Impossible d\'activer les notifications. Veuillez vérifier les permissions dans les paramètres.',
+                  );
+                }
               } catch (error) {
-                console.log('menuScreen err', error);
+                console.error('[MenuScreen] Error enabling notifications:', error);
+                Alert.alert(
+                  'Erreur',
+                  'Une erreur est survenue lors de l\'activation des notifications.',
+                );
               }
             },
+          },
+          {
+            text: 'Annuler',
+            style: 'cancel',
           },
         ],
       );
     } else {
+      // Désactivation des notifications
       try {
-        setIsEnabled(newValue); // false
-        await AsyncStorage.setItem('notifications_status', `${newValue}`);
-        await stopStask();
+        await disableNotifications();
       } catch (error) {
-        console.log('menuScreen err', error);
+        console.error('[MenuScreen] Error disabling notifications:', error);
       }
     }
   };
-
-  const initToggle = async () => {
-    try {
-      const notifiactionsStatus = await AsyncStorage.getItem(
-        'notifications_status',
-      );
-      if (notifiactionsStatus) {
-        setIsEnabled(JSON.parse(notifiactionsStatus));
-      }
-    } catch (e) {
-      console.log(
-        "[Menu] --> Can't update notifications_status by menu toggle",
-      );
-    }
-  };
-
-  React.useEffect(() => {
-    initToggle();
-  }, []);
 
   const handleEmail = () => {
     const email = 'appmystere@gmail.com';
@@ -133,10 +120,10 @@ export const MenuScreen = () => {
           <Text style={styles.notifItemText}>Notifications actives</Text>
           <Switch
             trackColor={{false: '#767577', true: '#767577'}}
-            thumbColor={isEnabled ? 'black' : '#f4f3f4'}
+            thumbColor={notificationsEnabled ? 'black' : '#f4f3f4'}
             ios_backgroundColor="#3e3e3e"
-            onValueChange={() => toggleSwitch()}
-            value={isEnabled}
+            onValueChange={toggleSwitch}
+            value={notificationsEnabled}
           />
         </View>
         <Text style={styles.notifItemSubText}>

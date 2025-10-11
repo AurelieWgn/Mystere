@@ -1,87 +1,72 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react/no-unstable-nested-components */
-import React, {useEffect, useContext, useState} from 'react';
+import React, {useEffect, useContext, useState, useCallback} from 'react';
 import {Text, View, StyleSheet, FlatList} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import GeolocationSvc from '../Services/GeolocationSvc';
-import Geolocation from 'react-native-geolocation-service';
 import {AppContext} from '../Providers/AppProvider';
 import {getRandomItem} from '../Utiles';
 import {PlaceItemFullWidth} from '../Components/PlaceItemFullWidth';
 import {FloatingButton} from '../Components/FloatingButton';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {useNotifService} from '../Hooks/useNotifications';
+import {useNotificationContext} from '../Providers/NotificationProvider';
+import {useLocationContext} from '../Providers/LocationProvider';
 
 export const HomeScreen = () => {
   const [state, dispatch] = useContext(AppContext);
-  const [locationPermission, setLocationPermission] = useState(false);
   const [randomPlaces, setRandom] = useState([]);
   const [hasSeenAlertMessage, sethasSeenAlertMessage] = useState(true);
-  const [displayNotificationsAlert, setDisplayNotificationsAlert] =
-    useState(false);
-  const locationSvc = new GeolocationSvc();
+  
   const navigation = useNavigation();
   const notifSvc = useNotifService();
+  
+  // Utiliser les contextes optimisés
+  const {shouldShowNotificationAlert, markAlertAsSeen} = useNotificationContext();
+  const {
+    getCurrentLocation,
+    foregroundPermissionGranted,
+    requestForegroundPermission,
+  } = useLocationContext();
 
-  const hasSeenIconNotification = async () => {
-    return await AsyncStorage.getItem('hasSeenNotificationIconAlert');
-  };
-  const hasActivatedNotification = async () => {
-    return await AsyncStorage.getItem('notifications_status');
-  };
-
-  const getLocationPermition = async () => {
-    locationSvc.askForGeolocationPermission().then(resp => {
-      setLocationPermission(resp);
-    });
-  };
-
-  const initLocation = async () => {
-    try {
-      Geolocation.getCurrentPosition(
-        data => {
-          let pos = {
-            longitude: data.coords.longitude,
-            latitude: data.coords.latitude,
-          };
-          // return { status: true, pos};
-          dispatch({type: 'UPDATE_USER_LOCATION', location: pos});
-        },
-        error => {
-          // See error code charts below.
-          console.log(error.code, error.message);
-        },
-        {enableHighAccuracy: true},
-      );
-    } catch (error) {
-      console.log('HomeScreen getCurrentLatLong::catcherror =>', error);
-      return {status: false, message: '[MapSvc] Can not get position'};
+  const getLocationPermition = useCallback(async () => {
+    if (!foregroundPermissionGranted) {
+      await requestForegroundPermission();
     }
-  };
+  }, [foregroundPermissionGranted, requestForegroundPermission]);
+
+  const initLocation = useCallback(async () => {
+    try {
+      const location = await getCurrentLocation();
+      
+      if (location) {
+        // Mettre à jour le contexte App pour compatibilité
+        dispatch({type: 'UPDATE_USER_LOCATION', location});
+      }
+    } catch (error) {
+      console.error('[HomeScreen] Error getting location:', error);
+    }
+  }, [getCurrentLocation, dispatch]);
 
   const renderItem = ({item}) => {
     return <PlaceItemFullWidth data={item} />;
   };
 
-  const onActiveNotifications = async () => {
-    await AsyncStorage.setItem('hasSeenNotificationIconAlert', 'true');
-    setDisplayNotificationsAlert(false);
+  const onActiveNotifications = useCallback(async () => {
+    await markAlertAsSeen();
     navigation.navigate('Menu');
-  };
+  }, [markAlertAsSeen, navigation]);
 
-  const onCloseNotificationIcon = async () => {
-    await AsyncStorage.setItem('hasSeenNotificationIconAlert', 'true');
-    setDisplayNotificationsAlert(false);
-  };
+  const onCloseNotificationIcon = useCallback(async () => {
+    await markAlertAsSeen();
+  }, [markAlertAsSeen]);
 
   useEffect(() => {
-    if (!locationPermission && hasSeenAlertMessage) {
+    if (!foregroundPermissionGranted && hasSeenAlertMessage) {
       getLocationPermition();
     }
-    if (!state.userLocation && locationPermission && hasSeenAlertMessage) {
+    if (!state.userLocation && foregroundPermissionGranted && hasSeenAlertMessage) {
       initLocation();
     }
-  }, [locationPermission, hasSeenAlertMessage]);
+  }, [foregroundPermissionGranted, hasSeenAlertMessage, state.userLocation, getLocationPermition, initLocation]);
 
   useEffect(() => {
     const numberOfPlaces = 5;
@@ -108,28 +93,13 @@ export const HomeScreen = () => {
   useEffect(() => {
     // used when the application is killed and user open the notification
     notifSvc.navigateToTheNotifiedBackgroundPlace();
-  }, []);
+  }, [notifSvc]);
 
-  useEffect(() => {
-    const checkNotificationsStatus = async () => {
-      const activated = await hasActivatedNotification();
-      const seenIcon = await hasSeenIconNotification();
-
-      if (!JSON.parse(activated) && !JSON.parse(seenIcon)) {
-        setDisplayNotificationsAlert(true);
-      } else if (JSON.parse(activated) && !JSON.parse(seenIcon)) {
-        setDisplayNotificationsAlert(false);
-      } else {
-        setDisplayNotificationsAlert(false);
-      }
-    };
-
-    checkNotificationsStatus();
-  });
+  // Plus besoin de ce useEffect - shouldShowNotificationAlert est géré par le contexte
 
   return (
     <View style={styles.container}>
-      {displayNotificationsAlert && (
+      {shouldShowNotificationAlert && (
         <FloatingButton
           activeNotifications={onActiveNotifications}
           close={onCloseNotificationIcon}
