@@ -70,17 +70,17 @@ const MainTabNavigation = () => {
   return (
     <Tab.Navigator
       initialRouteName="SplashScreen"
-      screenOptions={({}) => ({
+      screenOptions={{
         tabBarActiveTintColor: '#773B43',
         tabBarInactiveTintColor: '#000',
         tabBarShowLabel: false,
-      })}>
+      }}>
       <Tab.Screen
-        name="Accueil"
+        name="SplashScreen"
         component={HomeScreen}
         options={{
           headerShown: false,
-          title: 'Accueil',
+          title: 'SplashScreen',
           tabBarIcon: HomeIcon,
         }}
       />

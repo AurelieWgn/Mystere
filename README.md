@@ -22,3 +22,10 @@ OR To generate Aab
 
 // node 18 : nvm use 18
 // Java 17 : export JAVA_HOME=`/usr/libexec/java_home -v 17`
+
+# Utils
+
+Run server : npx react-native start --reset-cache
+
+Clean : cd android && ./gradlew clean && cd ..
+Run app :  npx react-native run-android   

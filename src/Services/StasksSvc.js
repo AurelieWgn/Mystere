@@ -1,7 +1,31 @@
 import BackgroundService from 'react-native-background-actions';
 import {locationAndNotificationTask} from '../tasks/CheckLocation';
-const {AlarmModule} = NativeModules;
 import {NativeModules, Platform, PermissionsAndroid} from 'react-native';
+
+const {AlarmModule} = NativeModules;
+
+const sleep = time => new Promise(resolve => setTimeout(() => resolve(), time));
+
+const notificationsTask = async taskDataArguments => {
+  try {
+    const {delay} = taskDataArguments;
+    
+    await new Promise(async resolve => {
+      for (let i = 0; BackgroundService.isRunning(); i++) {
+        try {
+          await locationAndNotificationTask();
+        } catch (error) {
+          console.log('Error in locationAndNotificationTask iteration', i, ':', error);
+        }
+        await sleep(delay);
+      }
+      
+      resolve();
+    });
+  } catch (error) {
+    console.log('Error in notificationsTask:', error);
+  }
+};
 
 const options = {
   taskName: 'Notifications',
@@ -21,33 +45,38 @@ const options = {
 const checkPermissionAndStartTask = async () => {
   if (Platform.OS === 'android') {
     try {
-      PermissionsAndroid.check('android.permission.POST_NOTIFICATIONS')
-        .then(response => {
-          if (!response) {
-            PermissionsAndroid.request(
-              'android.permission.POST_NOTIFICATIONS',
-              {
-                title: 'Respetion des Notifications',
-                message:
-                  'Mystère a besoin de votre autorisation pour recevoir les notifications',
-
-                buttonNeutral: 'Ask Me Later',
-                buttonNegative: 'Cancel',
-                buttonPositive: 'OK',
-              },
-            );
+      // Check permission for Android 13+
+      if (Platform.Version >= 33) {
+        const hasNotificationPermission = await PermissionsAndroid.check('android.permission.POST_NOTIFICATIONS');
+        console.log('Has notification permission:', hasNotificationPermission);
+        
+        if (!hasNotificationPermission) {
+          const granted = await PermissionsAndroid.request(
+            'android.permission.POST_NOTIFICATIONS',
+            {
+              title: 'Autorisation des Notifications',
+              message: 'Mystère a besoin de votre autorisation pour recevoir les notifications',
+              buttonNeutral: 'Plus tard',
+              buttonNegative: 'Annuler',
+              buttonPositive: 'OK',
+            },
+          );
+          console.log('Notification permission granted:', granted === PermissionsAndroid.RESULTS.GRANTED);
+          
+          if (granted !== PermissionsAndroid.RESULTS.GRANTED) {
+            console.log('Notification permission denied, cannot start background task');
+            return;
           }
-        })
-        .catch(err => {
-          console.log('Notification Error=====>', err);
-        });
+        }
+      }
     } catch (err) {
-      console.log(err);
+      console.log('Notification permission error:', err);
     }
   }
 
-  // Vérifier si la plateforme est Android et la version est >= 31
+  // Check if the platform is Android and the version is >= 31
   if (Platform.OS === 'android' && Platform.Version >= 31) {
+    console.log('Platform.OS === android && Platform.Version >= 31');
     try {
       const hasPermission = await AlarmModule.hasScheduleExactAlarmPermission();
       if (!hasPermission) {
@@ -60,12 +89,13 @@ const checkPermissionAndStartTask = async () => {
       } else {
         startTask();
       }
+      console.log('try  done');
     } catch (error) {
       console.error(error);
-      // Gérer les erreurs potentielles
     }
   } else if (Platform.OS === 'android' && Platform.Version < 31) {
-    // Pour les versions Android < 31, démarrer la tâche directement
+    console.log('Platform.OS === android && Platform.Version < 31');
+    // Start the task directly for Android versions < 31
     startTask();
   }
 };
@@ -73,6 +103,7 @@ const checkPermissionAndStartTask = async () => {
 const startTask = async () => {
   try {
     await BackgroundService.start(notificationsTask, options);
+    console.log('BackgroundService.start completed successfully');
   } catch (error) {
     console.log('start BG stask err', error);
   }
@@ -86,16 +117,6 @@ const backgroundTaskIsRunning = () => {
   return BackgroundService.isRunning();
 };
 
-const sleep = time => new Promise(resolve => setTimeout(() => resolve(), time));
 
-const notificationsTask = async taskDataArguments => {
-  const {delay} = taskDataArguments;
-  await new Promise(async resolve => {
-    for (let i = 0; BackgroundService.isRunning(); i++) {
-      locationAndNotificationTask();
-      await sleep(delay);
-    }
-  });
-};
 
 export {checkPermissionAndStartTask, stopStask, backgroundTaskIsRunning};

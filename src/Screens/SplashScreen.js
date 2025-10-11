@@ -43,6 +43,7 @@ export const SplashScreen = () => {
       try {
         const response = await fetch(API_URL_ALL_PLACES);
         const places = await response.json();
+        console.log('Places fetched successfully:', places.length);
         dispatch({type: 'INIT_ALL_PLACES', places: places});
         storePlacesData(JSON.stringify(places));
       } catch (err) {

@@ -97,14 +97,13 @@ export const HomeScreen = () => {
     }
   }, [state.places]);
 
-  useEffect(
-    () =>
-      navigation.addListener('beforeRemove', e => {
-        // Prevent default behavior of leaving the screen
-        e.preventDefault();
-      }),
-    [navigation],
-  );
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('beforeRemove', e => {
+      // Prevent default behavior of leaving the screen
+      e.preventDefault();
+    });
+    return unsubscribe;
+  }, [navigation]);
 
   useEffect(() => {
     // used when the application is killed and user open the notification
